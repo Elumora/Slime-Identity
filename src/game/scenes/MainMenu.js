@@ -100,15 +100,20 @@ export class MainMenu extends Scene {
                             const currentX = slime.x;
                             const currentY = slime.y;
                             const currentScale = slime.scaleX;
-                            const scaleIncrement = scaleDecrement;
-                            const nextScale = currentScale + scaleIncrement;
-                            let targetX, targetY;
-                            if (jumpCount === 4) {
-                                targetX = 1297;
-                                targetY = 370;
-                            } else {
+                            let targetX, targetY, nextScale;
+                            const cyclePosition = jumpCount % 6;
+                            if (cyclePosition < 4) {
                                 targetX = currentX + Math.abs(jumpDistanceX);
                                 targetY = currentY + Math.abs(jumpDistanceY);
+                                nextScale = currentScale + scaleDecrement;
+                            } else if (cyclePosition === 4) {
+                                targetX = 1297;
+                                targetY = 370;
+                                nextScale = currentScale + scaleDecrement;
+                            } else {
+                                targetX = endX;
+                                targetY = endY;
+                                nextScale = finalScale;
                             }
                             jumpCount++;
                             this.sound.play('jump');
