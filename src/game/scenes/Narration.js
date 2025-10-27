@@ -9,7 +9,47 @@ export class Narration extends Scene {
         const bg = this.add.rectangle(960, 540, 1920, 1080, 0x000000);
         const image = this.add.image(960, 540, 'story-01').setAlpha(0).setScale(1);
 
-        this.time.delayedCall(500, () => this.sound.play('narration-intro'));
+        const subtitleStyle = {
+            fontFamily: 'Arial',
+            fontSize: 32,
+            color: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 6,
+            align: 'center',
+            wordWrap: { width: 1600 }
+        };
+        const subtitle = this.add.text(960, 950, '', subtitleStyle).setOrigin(0.5).setAlpha(0);
+
+        const subtitles = [
+            { time: 500, text: "Il n'a ni nom\u2026 ni forme d\u00e9finie." },
+            { time: 5500, text: "Il s'\u00e9veille, seul, dans un monde\nqui ne lui dit rien." },
+            { time: 13500, text: "Un battement. Une pulsation.\nUne conscience." },
+            { time: 19500, text: "Ce slime\u2026 c'est toi." },
+            { time: 23500, text: "Tu ignores ce que tu es." },
+            { time: 26500, text: "Tu ignores pourquoi tu es l\u00e0." },
+            { time: 29500, text: "Mais quelque chose t'appelle." },
+            { time: 33500, text: "Des fragments \u00e9parpill\u00e9s\ndans les ruines du monde." },
+            { time: 38500, text: "Des \u00e9clats de m\u00e9moire, de pouvoir\u2026\nd'identit\u00e9." },
+            { time: 43500, text: "Chaque combat te rapproche\nde la v\u00e9rit\u00e9." },
+            { time: 47500, text: "Chaque carte que tu absorbes\nte transforme." },
+            { time: 51500, text: "Trouve les fragments." },
+            { time: 53500, text: "Reconstruis ce que tu \u00e9tais." },
+            { time: 56500, text: "Et d\u00e9couvre\u2026 ce que tu pourrais\ndevenir." },
+            { time: 61000, text: "" }
+        ];
+
+        subtitles.forEach(sub => {
+            this.time.delayedCall(sub.time, () => {
+                subtitle.setText(sub.text);
+                if (sub.text === '') {
+                    this.tweens.add({ targets: subtitle, alpha: 0, duration: 500 });
+                } else if (subtitle.alpha === 0) {
+                    this.tweens.add({ targets: subtitle, alpha: 1, duration: 300 });
+                }
+            });
+        });
+
+        this.time.delayedCall(1000, () => this.sound.play('narration-intro'));
 
         this.tweens.add({
             targets: bg,
@@ -107,7 +147,7 @@ export class Narration extends Scene {
                             duration: 300,
                             ease: 'Quad.easeOut',
                             delay,
-                            onStart: () => this.sound.play('jump').sound.setVolume(0.5)
+                            onStart: () => this.sound.play('jump', { volume: 0.5 })
                         });
                         this.tweens.add({
                             targets: slime,
@@ -134,7 +174,10 @@ export class Narration extends Scene {
                                         ease: 'Sine.easeInOut',
                                         delay: 200
                                     });
-                                    this.time.delayedCall(8000, () => this.scene.start('Game'));
+                                    this.time.delayedCall(8000, () => {
+                                        subtitle.destroy();
+                                        this.scene.start('Game');
+                                    });
                                 }
                             }
                         });
