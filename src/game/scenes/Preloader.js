@@ -29,6 +29,7 @@ export class Preloader extends Scene {
         this.load.image('button-green', 'assets/GUI/button-green.png');
         this.load.image('button-red', 'assets/GUI/button-red.png');
         this.load.audio('jump', 'assets/Audio/GUI/jump.mp3');
+        this.load.audio('logo-apparition', 'assets/Audio/GUI/logo-apparition.mp3');
         this.load.audio('menu-music', 'assets/Audio/BGM/menu-music.mp3');
 
         this.load.image('card-template', 'assets/GUI/card-template.png');

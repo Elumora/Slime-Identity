@@ -98,6 +98,8 @@ export class MainMenu extends Scene {
 
         const logo = this.add.image(960, 460, 'logo').setAlpha(0).setScale(0.6).setDepth(2);
 
+        this.time.delayedCall(4000, () => this.sound.play('logo-apparition'));
+
         this.tweens.add({
             targets: logo,
             alpha: 1,
