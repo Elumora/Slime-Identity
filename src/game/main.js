@@ -2,7 +2,9 @@ import Phaser from 'phaser';
 import { DevGrid } from './debug/DevGrid';
 import { Boot } from './scenes/Boot';
 import { Game } from './scenes/Game';
+import { GameScene } from './scenes/GameScene';
 import { MainMenu } from './scenes/MainMenu';
+import { MapScene } from './scenes/MapScene';
 import { Narration } from './scenes/Narration';
 import { Preloader } from './scenes/Preloader';
 
@@ -20,8 +22,10 @@ const config = {
         Boot,
         Preloader,
         MainMenu,
+        MapScene,
         Narration,
         Game,
+        GameScene,
         DevGrid
     ]
 };

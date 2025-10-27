@@ -162,12 +162,8 @@ export class MainMenu extends Scene {
             this.scene.start('Narration');
         });
         btnNo.on('pointerdown', () => {
-            modal.destroy();
-            text.destroy();
-            btnYes.destroy();
-            txtYes.destroy();
-            btnNo.destroy();
-            txtNo.destroy();
+            this.sound.stopAll();
+            this.scene.start('MapScene');
         });
     }
 }
