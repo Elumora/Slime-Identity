@@ -28,6 +28,9 @@ export class Preloader extends Scene
     {
         this.load.image('menu-bg', 'assets/GUI/menu-background-opt.png');
         this.load.image('logo', 'assets/GUI/slime-identity-logo.png');
+        this.load.image('slime-bleu', 'assets/GUI/slime-bleu-opacite.png');
+        this.load.audio('jump', 'assets/Audio/GUI/jump.mp3');
+        this.load.audio('menu-music', 'assets/Audio/BGM/menu-music.mp3');
         
         this.load.image('card-template', 'assets/GUI/card-template.png');
         this.load.image('card-absorbtion', 'assets/Cards/absorbtion-de-mana.png');
