@@ -126,6 +126,8 @@ export class MainMenu extends Scene {
         }
 
         const logo = this.add.image(960, 460, 'logo').setAlpha(0).setScale(0.6).setDepth(2);
+        const logoHomeX = 960;
+        const logoHomeY = 460;
 
         this.time.delayedCall(4000, () => this.sound.play('logo-apparition'));
 
@@ -136,7 +138,7 @@ export class MainMenu extends Scene {
             duration: 800
         });
 
-        this.tweens.add({
+        const logoFloatTween = this.tweens.add({
             targets: logo,
             y: '+=15',
             duration: 2000,
@@ -144,6 +146,37 @@ export class MainMenu extends Scene {
             repeat: -1,
             ease: 'Sine.easeInOut',
             delay: 5800
+        });
+
+        this.time.delayedCall(5800, () => {
+            logo.setInteractive({ draggable: true, useHandCursor: true });
+            this.input.setDraggable(logo);
+
+            logo.on('dragstart', () => {
+                logoFloatTween.pause();
+            });
+
+            logo.on('drag', (pointer, dragX, dragY) => {
+                logo.x = dragX;
+                logo.y = dragY;
+                this.particles.setPosition(dragX, dragY);
+            });
+
+            logo.on('dragend', () => {
+                this.tweens.add({
+                    targets: logo,
+                    x: logoHomeX,
+                    y: logoHomeY,
+                    duration: 500,
+                    ease: 'Back.easeOut',
+                    onUpdate: () => this.particles.setPosition(logo.x, logo.y),
+                    onComplete: () => logoFloatTween.resume()
+                });
+            });
+        });
+
+        this.events.on('update', () => {
+            this.particles.setPosition(logo.x, logo.y);
         });
 
 
