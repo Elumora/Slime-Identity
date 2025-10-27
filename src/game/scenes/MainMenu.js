@@ -153,7 +153,7 @@ export class MainMenu extends Scene {
     }
 
     showQuestModal() {
-        const modal = this.add.image(960, 540, 'quest-start');
+        const modal = this.add.image(960, 540, 'quest-start').setDepth(3);
 
         const text = this.add.text(960, 430, 'Tu ne sais pas encore qui tu es… veux-tu le découvrir ?', {
             fontFamily: 'Arial',
@@ -163,13 +163,13 @@ export class MainMenu extends Scene {
             wordWrap: { width: 800 },
             stroke: '#000000',
             strokeThickness: 6
-        }).setOrigin(0.5, 0);
+        }).setOrigin(0.5, 0).setDepth(3);
 
 
         const yesY = 430 + 250
         const gap = 100;
 
-        const btnYes = this.add.image(960, yesY, 'button-green').setInteractive({ useHandCursor: true }).setScale(0.8);
+        const btnYes = this.add.image(960, yesY, 'button-green').setInteractive({ useHandCursor: true }).setScale(0.8).setDepth(3);
         const txtYes = this.add.text(960, yesY, 'oui', {
             fontFamily: 'Arial',
             fontSize: 60,
@@ -178,9 +178,9 @@ export class MainMenu extends Scene {
             stroke: '#000000',
             align: 'center',
             strokeThickness: 6
-        }).setOrigin(0.5, 0.6);
+        }).setOrigin(0.5, 0.6).setDepth(3);
 
-        const btnNo = this.add.image(960, yesY + gap, 'button-red').setInteractive({ useHandCursor: true }).setScale(0.8);
+        const btnNo = this.add.image(960, yesY + gap, 'button-red').setInteractive({ useHandCursor: true }).setScale(0.8).setDepth(3);
         const txtNo = this.add.text(960, yesY + gap, 'non', {
             fontFamily: 'Arial',
             fontSize: 60,
@@ -188,7 +188,7 @@ export class MainMenu extends Scene {
             stroke: '#000000',
             align: 'center',
             strokeThickness: 6
-        }).setOrigin(0.5, 0.6);
+        }).setOrigin(0.5, 0.6).setDepth(3);
 
         btnYes.on('pointerdown', () => {
             this.sound.stopAll();
