@@ -91,31 +91,56 @@ export class MainMenu extends Scene {
                             delay: 200
                         });
                         let isJumping = false;
+                        let currentIdleTween = idleTween;
                         slime.setInteractive({ useHandCursor: true }).on('pointerdown', () => {
                             if (isJumping) return;
                             isJumping = true;
-                            idleTween.pause();
+                            currentIdleTween.stop();
+                            const currentX = slime.x;
                             const currentY = slime.y;
+                            const currentScale = slime.scaleX;
+                            const scaleIncrement = scaleDecrement;
+                            const nextScale = currentScale + scaleIncrement;
+                            const targetX = currentX + Math.abs(jumpDistanceX);
+                            const targetY = currentY + Math.abs(jumpDistanceY);
                             this.sound.play('jump');
                             this.tweens.add({
                                 targets: slime,
-                                y: currentY - 80,
-                                scaleX: finalScale * 0.85,
-                                scaleY: finalScale * 1.15,
-                                duration: 250,
+                                x: targetX,
+                                y: targetY - 100,
+                                scaleX: currentScale * 0.85,
+                                scaleY: currentScale * 1.15,
+                                duration: 300,
                                 ease: 'Quad.easeOut'
                             });
                             this.tweens.add({
                                 targets: slime,
-                                y: currentY,
-                                scaleX: finalScale * 1.15,
-                                scaleY: finalScale * 0.85,
-                                duration: 250,
+                                y: targetY,
+                                scaleX: nextScale * 1.15,
+                                scaleY: nextScale * 0.85,
+                                duration: 300,
                                 ease: 'Quad.easeIn',
-                                delay: 250,
+                                delay: 300,
                                 onComplete: () => {
-                                    isJumping = false;
-                                    idleTween.resume();
+                                    this.tweens.add({
+                                        targets: slime,
+                                        scaleX: nextScale,
+                                        scaleY: nextScale,
+                                        duration: 200,
+                                        onComplete: () => {
+                                            const newIdleScaleChange = nextScale * 0.06;
+                                            currentIdleTween = this.tweens.add({
+                                                targets: slime,
+                                                scaleY: `+=${newIdleScaleChange}`,
+                                                y: `-=${slime.displayHeight * newIdleScaleChange / 2}`,
+                                                duration: 1500,
+                                                yoyo: true,
+                                                repeat: -1,
+                                                ease: 'Sine.easeInOut'
+                                            });
+                                            isJumping = false;
+                                        }
+                                    });
                                 }
                             });
                         });
