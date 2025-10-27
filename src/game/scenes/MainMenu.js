@@ -13,20 +13,33 @@ export class MainMenu extends Scene {
 
         this.sound.play('menu-music', { loop: true, volume: 0.5 });
 
-        const slime = this.add.image(-200, 540, 'slime-bleu').setScale(0.32);
+        const sizeReductionPercent = 0.20; // 15%
+        const initialScale = 0.32 * 1.10;
+        const finalScale = 0.32 * 0.85 * (1 - sizeReductionPercent);
+        const slime = this.add.image(1087, 1066, 'slime-bleu').setScale(initialScale);
 
         const jumps = 5;
-        const jumpDistance = 1160 / jumps;
+        const startX = 1087;
+        const startY = 1066;
+        const endX = 502;
+        const endY = 625;
+        const jumpDistanceX = (endX - startX) / jumps;
+        const jumpDistanceY = (endY - startY) / jumps;
+        const scaleDecrement = (initialScale - finalScale) / jumps;
         let delay = 0;
 
         for (let i = 0; i < jumps; i++) {
-            const targetX = -200 + jumpDistance * (i + 1);
+            const targetX = startX + jumpDistanceX * (i + 1);
+            const targetY = startY + jumpDistanceY * (i + 1);
+            const currentScale = initialScale - scaleDecrement * i;
+            const nextScale = initialScale - scaleDecrement * (i + 1);
+
             this.tweens.add({
                 targets: slime,
                 x: targetX,
-                y: 400,
-                scaleX: 0.28,
-                scaleY: 0.36,
+                y: targetY - 100,
+                scaleX: currentScale * 0.85,
+                scaleY: currentScale * 1.15,
                 duration: 300,
                 ease: 'Quad.easeOut',
                 delay,
@@ -34,9 +47,9 @@ export class MainMenu extends Scene {
             });
             this.tweens.add({
                 targets: slime,
-                y: 540,
-                scaleX: 0.36,
-                scaleY: 0.28,
+                y: targetY,
+                scaleX: nextScale * 1.15,
+                scaleY: nextScale * 0.85,
                 duration: 300,
                 ease: 'Quad.easeIn',
                 delay: delay + 300,
@@ -44,13 +57,15 @@ export class MainMenu extends Scene {
                     if (i === jumps - 1) {
                         this.tweens.add({
                             targets: slime,
-                            scaleX: 0.32,
-                            scaleY: 0.32,
+                            scaleX: finalScale,
+                            scaleY: finalScale,
                             duration: 200
                         });
+                        const idleScaleChange = finalScale * 0.06;
                         this.tweens.add({
                             targets: slime,
-                            scaleY: '+=0.02',
+                            scaleY: `+=${idleScaleChange}`,
+                            y: `-=${slime.displayHeight * idleScaleChange / 2}`,
                             duration: 1500,
                             yoyo: true,
                             repeat: -1,
