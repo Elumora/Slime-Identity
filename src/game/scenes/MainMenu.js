@@ -92,6 +92,7 @@ export class MainMenu extends Scene {
                         });
                         let isJumping = false;
                         let currentIdleTween = idleTween;
+                        let jumpCount = 0;
                         slime.setInteractive({ useHandCursor: true }).on('pointerdown', () => {
                             if (isJumping) return;
                             isJumping = true;
@@ -101,8 +102,15 @@ export class MainMenu extends Scene {
                             const currentScale = slime.scaleX;
                             const scaleIncrement = scaleDecrement;
                             const nextScale = currentScale + scaleIncrement;
-                            const targetX = currentX + Math.abs(jumpDistanceX);
-                            const targetY = currentY + Math.abs(jumpDistanceY);
+                            let targetX, targetY;
+                            if (jumpCount === 4) {
+                                targetX = 1297;
+                                targetY = 370;
+                            } else {
+                                targetX = currentX + Math.abs(jumpDistanceX);
+                                targetY = currentY + Math.abs(jumpDistanceY);
+                            }
+                            jumpCount++;
                             this.sound.play('jump');
                             this.tweens.add({
                                 targets: slime,
