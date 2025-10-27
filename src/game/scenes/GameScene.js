@@ -117,7 +117,7 @@ export class GameScene extends Scene {
 
     createEnemies() {
         const progress = GameProgress.load();
-        this.player = new Enemy(this, -100, 594, 'character', 2);
+        this.player = new Enemy(this, -100, 594, 'character', 0.3);
         this.player.maxHealth = 80;
         this.player.health = progress.playerHealth !== undefined ? progress.playerHealth : 80;
         this.player.isPlayer = true;
