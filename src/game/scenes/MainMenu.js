@@ -9,14 +9,32 @@ export class MainMenu extends Scene {
     create() {
         this.scene.launch('DevGrid');
 
-        this.add.image(960, 540, 'menu-bg').setDisplaySize(1920, 1080);
+        const particleGraphics = this.add.graphics();
+        particleGraphics.fillStyle(0xffffff, 1);
+        particleGraphics.fillCircle(8, 8, 8);
+        particleGraphics.generateTexture('particle', 16, 16);
+        particleGraphics.destroy();
+
+        this.particles = this.add.particles(953, 511, 'particle', {
+            speed: { min: 20, max: 80 },
+            angle: { min: 0, max: 360 },
+            alpha: { start: 0.3, end: 0 },
+            scale: { start: 0.5, end: 1.5 },
+            lifespan: 10_000,
+            frequency: 50,
+            blendMode: 'ADD'
+        }).setDepth(1).stop();
+
+        this.time.delayedCall(5000, () => this.particles.start());
+
+        this.add.image(960, 540, 'menu-bg').setDisplaySize(1920, 1080).setDepth(0);
 
         this.sound.play('menu-music', { loop: true, volume: 0.5 });
 
         const sizeReductionPercent = 0.20; // 15%
         const initialScale = 0.32 * 1.10;
         const finalScale = 0.32 * 0.85 * (1 - sizeReductionPercent);
-        const slime = this.add.image(1087, 1066, 'slime-bleu').setScale(initialScale);
+        const slime = this.add.image(1087, 1066, 'slime-bleu').setScale(initialScale).setDepth(1);
 
         const jumps = 5;
         const startX = 1087;
@@ -78,7 +96,7 @@ export class MainMenu extends Scene {
             delay += 600;
         }
 
-        const logo = this.add.image(960, 460, 'logo').setAlpha(0).setScale(0.6);
+        const logo = this.add.image(960, 460, 'logo').setAlpha(0).setScale(0.6).setDepth(2);
 
         this.tweens.add({
             targets: logo,
