@@ -47,6 +47,12 @@ export class Preloader extends Scene
         this.load.image('card-acide', 'assets/Cards/projection-acide.png');
         this.load.image('card-gelatineuse', 'assets/Cards/projection-gelatineuse.png');
         this.load.image('card-transfusion', 'assets/Cards/transfusion-visqueuse.png');
+        
+        this.load.image('story-01', 'assets/Story/story-01.jpeg');
+        this.load.image('story-02', 'assets/Story/story-02.jpeg');
+        this.load.image('story-03', 'assets/Story/story-03.jpeg');
+        this.load.image('story-04', 'assets/Story/story-04.jpeg');
+        this.load.audio('narration-intro', 'assets/Audio/Story/01-introduction-fr.mp3');
     }
 
     create ()

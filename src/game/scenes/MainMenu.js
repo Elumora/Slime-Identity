@@ -157,7 +157,10 @@ export class MainMenu extends Scene {
             strokeThickness: 6
         }).setOrigin(0.5, 0.6);
 
-        btnYes.on('pointerdown', () => this.scene.start('Game'));
+        btnYes.on('pointerdown', () => {
+            this.sound.stopAll();
+            this.scene.start('Narration');
+        });
         btnNo.on('pointerdown', () => {
             modal.destroy();
             text.destroy();

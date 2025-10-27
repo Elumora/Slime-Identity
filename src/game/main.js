@@ -3,6 +3,7 @@ import { DevGrid } from './debug/DevGrid';
 import { Boot } from './scenes/Boot';
 import { Game } from './scenes/Game';
 import { MainMenu } from './scenes/MainMenu';
+import { Narration } from './scenes/Narration';
 import { Preloader } from './scenes/Preloader';
 
 const config = {
@@ -19,6 +20,7 @@ const config = {
         Boot,
         Preloader,
         MainMenu,
+        Narration,
         Game,
         DevGrid
     ]
