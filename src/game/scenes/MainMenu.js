@@ -97,7 +97,7 @@ export class MainMenu extends Scene {
 
         const newGame = this.add.text(menuX, menuY, 'Nouvelle Partie', buttonStyle)
             .setInteractive({ useHandCursor: true })
-            .on('pointerdown', () => this.scene.start('Game'))
+            .on('pointerdown', () => this.showQuestModal())
             .on('pointerover', () => newGame.setColor('#ffff00'))
             .on('pointerout', () => newGame.setColor('#ffffff'));
 
@@ -117,5 +117,54 @@ export class MainMenu extends Scene {
             .on('pointerout', () => settings.setColor('#ffffff'));
 
         EventBus.emit('current-scene-ready', this);
+    }
+
+    showQuestModal() {
+        const modal = this.add.image(960, 540, 'quest-start');
+
+        const text = this.add.text(960, 430, 'Tu ne sais pas encore qui tu es… veux-tu le découvrir ?', {
+            fontFamily: 'Arial',
+            fontSize: 58,
+            fontStyle: 'bold',
+            align: 'center',
+            wordWrap: { width: 800 },
+            stroke: '#000000',
+            strokeThickness: 6
+        }).setOrigin(0.5, 0);
+
+
+        const yesY = 430 + 250
+        const gap = 100;
+
+        const btnYes = this.add.image(960, yesY, 'button-green').setInteractive({ useHandCursor: true }).setScale(0.8);
+        const txtYes = this.add.text(960, yesY, 'oui', {
+            fontFamily: 'Arial',
+            fontSize: 60,
+            fontStyle: 'bold',
+            color: '#ffffff',
+            stroke: '#000000',
+            align: 'center',
+            strokeThickness: 6
+        }).setOrigin(0.5, 0.6);
+
+        const btnNo = this.add.image(960, yesY + gap, 'button-red').setInteractive({ useHandCursor: true }).setScale(0.8);
+        const txtNo = this.add.text(960, yesY + gap, 'non', {
+            fontFamily: 'Arial',
+            fontSize: 60,
+            color: '#ffffff',
+            stroke: '#000000',
+            align: 'center',
+            strokeThickness: 6
+        }).setOrigin(0.5, 0.6);
+
+        btnYes.on('pointerdown', () => this.scene.start('Game'));
+        btnNo.on('pointerdown', () => {
+            modal.destroy();
+            text.destroy();
+            btnYes.destroy();
+            txtYes.destroy();
+            btnNo.destroy();
+            txtNo.destroy();
+        });
     }
 }

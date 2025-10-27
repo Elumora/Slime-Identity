@@ -29,6 +29,9 @@ export class Preloader extends Scene
         this.load.image('menu-bg', 'assets/GUI/menu-background-opt.png');
         this.load.image('logo', 'assets/GUI/slime-identity-logo.png');
         this.load.image('slime-bleu', 'assets/GUI/slime-bleu-opacite.png');
+        this.load.image('quest-start', 'assets/GUI/quest-start.png');
+        this.load.image('button-green', 'assets/GUI/button-green.png');
+        this.load.image('button-red', 'assets/GUI/button-red.png');
         this.load.audio('jump', 'assets/Audio/GUI/jump.mp3');
         this.load.audio('menu-music', 'assets/Audio/BGM/menu-music.mp3');
         
