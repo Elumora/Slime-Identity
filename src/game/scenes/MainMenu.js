@@ -80,7 +80,7 @@ export class MainMenu extends Scene {
                             duration: 200
                         });
                         const idleScaleChange = finalScale * 0.06;
-                        this.tweens.add({
+                        const idleTween = this.tweens.add({
                             targets: slime,
                             scaleY: `+=${idleScaleChange}`,
                             y: `-=${slime.displayHeight * idleScaleChange / 2}`,
@@ -89,6 +89,35 @@ export class MainMenu extends Scene {
                             repeat: -1,
                             ease: 'Sine.easeInOut',
                             delay: 200
+                        });
+                        let isJumping = false;
+                        slime.setInteractive({ useHandCursor: true }).on('pointerdown', () => {
+                            if (isJumping) return;
+                            isJumping = true;
+                            idleTween.pause();
+                            const currentY = slime.y;
+                            this.sound.play('jump');
+                            this.tweens.add({
+                                targets: slime,
+                                y: currentY - 80,
+                                scaleX: finalScale * 0.85,
+                                scaleY: finalScale * 1.15,
+                                duration: 250,
+                                ease: 'Quad.easeOut'
+                            });
+                            this.tweens.add({
+                                targets: slime,
+                                y: currentY,
+                                scaleX: finalScale * 1.15,
+                                scaleY: finalScale * 0.85,
+                                duration: 250,
+                                ease: 'Quad.easeIn',
+                                delay: 250,
+                                onComplete: () => {
+                                    isJumping = false;
+                                    idleTween.resume();
+                                }
+                            });
                         });
                     }
                 }
