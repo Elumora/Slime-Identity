@@ -128,11 +128,30 @@ export class MainMenu extends Scene {
             strokeThickness: 4
         };
 
+        const emitZone = new Phaser.Geom.Rectangle(0, 0, 100, 40);
+        const buttonParticles = this.add.particles(0, 0, 'particle', {
+            speed: { min: 30, max: 60 },
+            angle: { min: 0, max: 360 },
+            alpha: { start: 0.6, end: 0 },
+            scale: { start: 0.3, end: 0.8 },
+            lifespan: 800,
+            frequency: 30,
+            blendMode: 'ADD',
+            emitZone: { type: 'random', source: emitZone }
+        }).setDepth(0).stop();
+
         const newGame = this.add.text(menuX, menuY, 'Nouvelle Partie', buttonStyle)
             .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => this.showQuestModal())
-            .on('pointerover', () => newGame.setColor('#ffff00'))
-            .on('pointerout', () => newGame.setColor('#ffffff'));
+            .on('pointerover', () => {
+                newGame.setColor('#ffff00');
+                emitZone.setSize(newGame.width, newGame.height);
+                buttonParticles.setPosition(newGame.x, newGame.y).start();
+            })
+            .on('pointerout', () => {
+                newGame.setColor('#ffffff');
+                buttonParticles.stop();
+            });
 
         // const continueGame = this.add.text(menuX, menuY + spacing, 'Continuer', buttonStyle)
         //     .setInteractive({ useHandCursor: true })
@@ -141,13 +160,27 @@ export class MainMenu extends Scene {
 
         const stats = this.add.text(menuX, menuY + spacing * 1, 'Statistiques', buttonStyle)
             .setInteractive({ useHandCursor: true })
-            .on('pointerover', () => stats.setColor('#ffff00'))
-            .on('pointerout', () => stats.setColor('#ffffff'));
+            .on('pointerover', () => {
+                stats.setColor('#ffff00');
+                emitZone.setSize(stats.width, stats.height);
+                buttonParticles.setPosition(stats.x, stats.y).start();
+            })
+            .on('pointerout', () => {
+                stats.setColor('#ffffff');
+                buttonParticles.stop();
+            });
 
         const settings = this.add.text(menuX, menuY + spacing * 2, 'Paramètres', buttonStyle)
             .setInteractive({ useHandCursor: true })
-            .on('pointerover', () => settings.setColor('#ffff00'))
-            .on('pointerout', () => settings.setColor('#ffffff'));
+            .on('pointerover', () => {
+                settings.setColor('#ffff00');
+                emitZone.setSize(settings.width, settings.height);
+                buttonParticles.setPosition(settings.x, settings.y).start();
+            })
+            .on('pointerout', () => {
+                settings.setColor('#ffffff');
+                buttonParticles.stop();
+            });
 
         EventBus.emit('current-scene-ready', this);
     }
