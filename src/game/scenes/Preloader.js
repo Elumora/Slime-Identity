@@ -32,17 +32,17 @@ export class Preloader extends Scene {
         this.load.audio('menu-music', 'assets/Audio/BGM/menu-music.mp3');
 
         this.load.image('card-template', 'assets/GUI/card-template.png');
-        this.load.image('card-absorbtion', 'assets/Cards/absorbtion-de-mana.png');
-        this.load.image('card-armure', 'assets/Cards/armure-molle.png');
-        this.load.image('card-assimilation', 'assets/Cards/assimilation.png');
-        this.load.image('card-cycle', 'assets/Cards/cycle-des-fluides.png');
-        this.load.image('card-division', 'assets/Cards/division-controlee.png');
-        this.load.image('card-durcissement', 'assets/Cards/durcissement.png');
-        this.load.image('card-frappe', 'assets/Cards/frappe-visqueuse.png');
-        this.load.image('card-limon', 'assets/Cards/limon-entravant.png');
-        this.load.image('card-acide', 'assets/Cards/projection-acide.png');
-        this.load.image('card-gelatineuse', 'assets/Cards/projection-gelatineuse.png');
-        this.load.image('card-transfusion', 'assets/Cards/transfusion-visqueuse.png');
+        this.load.image('viscousstrike', 'assets/Cards/frappe-visqueuse.png');
+        this.load.image('acidprojection', 'assets/Cards/projection-acide.png');
+        this.load.image('gelatinousrush', 'assets/Cards/projection-gelatineuse.png');
+        this.load.image('hardening', 'assets/Cards/durcissement.png');
+        this.load.image('wall', 'assets/Cards/armure-molle.png');
+        this.load.image('manaabsorption', 'assets/Cards/absorbtion-de-mana.png');
+        this.load.image('controlleddivision', 'assets/Cards/division-controlee.png');
+        this.load.image('slowness', 'assets/Cards/limon-entravant.png');
+        this.load.image('fluidcycle', 'assets/Cards/cycle-des-fluides.png');
+        this.load.image('assimilation', 'assets/Cards/assimilation.png');
+        this.load.image('viscoustransfusion', 'assets/Cards/transfusion-visqueuse.png');
 
         // Monsters
         this.load.spritesheet('plent', 'assets/Enemies/Plent/Idle.png', { frameWidth: 128, frameHeight: 128 });

@@ -15,14 +15,14 @@ export class Card extends Phaser.GameObjects.Container {
         this.isHovered = false;
         this.isCentered = false;
 
+        this.cardSprite = scene.add.image(0, 0, 'card-template');
+        this.cardSprite.setScale(0.50);
+        
         if (cardData.icon) {
             const icon = scene.add.image(0, -40, cardData.icon);
             icon.setScale(0.25);
             this.add(icon);
         }
-
-        this.cardSprite = scene.add.image(0, 0, 'card');
-        this.cardSprite.setScale(0.50);
         this.add(this.cardSprite);
 
         // const costBg = scene.add.circle(-125, -186, 24, 0xffffff);
