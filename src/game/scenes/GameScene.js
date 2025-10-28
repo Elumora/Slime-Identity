@@ -50,8 +50,8 @@ export class GameScene extends Scene {
             fontStyle: 'bold'
         }).setOrigin(0.5);
 
-        this.add.image(100, 1000, 'mana').setScale(0.8);
-        this.manaText = this.add.text(100, 1000, '4', {
+        this.add.image(170, 850, 'mana').setScale(0.5);
+        this.manaText = this.add.text(170, 850, '4', {
             fontSize: '32px',
             color: '#ffffff',
             fontStyle: 'bold'
@@ -456,7 +456,7 @@ export class GameScene extends Scene {
         this.endTurnBtn.setFillStyle(0x555555);
         this.endTurnText.setAlpha(0.5);
         this.cardsPlayedThisTurn = 0;
-        
+
         this.discardHand();
 
         this.time.delayedCall(400, () => {
@@ -473,93 +473,93 @@ export class GameScene extends Scene {
         this.time.delayedCall(1200, () => {
 
             if (!this.skipNextEnemyTurn) {
-                    const activeEnemies = this.enemies.filter(e => e.active);
-                    activeEnemies.forEach((enemy, i) => {
-                        this.time.delayedCall(i * 800, () => {
-                            const startX = enemy.x;
-                            let damage = enemy.attackDamage;
+                const activeEnemies = this.enemies.filter(e => e.active);
+                activeEnemies.forEach((enemy, i) => {
+                    this.time.delayedCall(i * 800, () => {
+                        const startX = enemy.x;
+                        let damage = enemy.attackDamage;
 
-                            if (enemy.debuffs.slow) {
-                                damage = Math.floor(damage * (1 - enemy.debuffs.slow.value));
-                            }
+                        if (enemy.debuffs.slow) {
+                            damage = Math.floor(damage * (1 - enemy.debuffs.slow.value));
+                        }
 
-                            if (enemy.debuffs.skip && enemy.debuffs.skip.duration > 0) {
-                                this.showCardEffect('Skipped', enemy.x, enemy.y - 50);
-                                enemy.debuffs.skip.duration--;
-                                if (enemy.debuffs.skip.duration <= 0) delete enemy.debuffs.skip;
-                                enemy.updateHealthBar();
-                                return;
-                            }
+                        if (enemy.debuffs.skip && enemy.debuffs.skip.duration > 0) {
+                            this.showCardEffect('Skipped', enemy.x, enemy.y - 50);
+                            enemy.debuffs.skip.duration--;
+                            if (enemy.debuffs.skip.duration <= 0) delete enemy.debuffs.skip;
+                            enemy.updateHealthBar();
+                            return;
+                        }
 
-                            this.tweens.add({
-                                targets: enemy,
-                                x: startX - 100,
-                                duration: 200,
-                                yoyo: true,
-                                onYoyo: () => {
-                                    if (this.player.buffs.evasion && this.player.buffs.evasion.duration > 0) {
-                                        this.showCardEffect('Evaded!', this.player.x, this.player.y - 50);
-                                        this.player.buffs.evasion.duration--;
-                                        if (this.player.buffs.evasion.duration <= 0) delete this.player.buffs.evasion;
-                                    } else {
-                                        this.sound.play('monster_attack');
-                                        this.playAttackEffect(this.player.x, this.player.y);
-                                        this.player.takeDamage(damage);
-                                        this.checkDefeat();
-                                    }
-                                },
-                                onComplete: () => {
-                                    Object.keys(enemy.debuffs).forEach(key => {
-                                        if (enemy.debuffs[key].duration) {
-                                            enemy.debuffs[key].duration--;
-                                            if (enemy.debuffs[key].duration <= 0) {
-                                                delete enemy.debuffs[key];
-                                                enemy.updateHealthBar();
-                                            }
-                                        }
-                                    });
-                                    
-                                    if (i === activeEnemies.length - 1) {
-                                        this.time.delayedCall(300, () => {
-                                            if (this.player.temporaryShield) {
-                                                this.player.temporaryShield = 0;
-                                                this.player.updateHealthBar();
-                                            }
-                                            
-                                            if (this.player.blockIncrement && this.player.blockIncrement.value > 0) {
-                                                this.player.shield += this.player.blockIncrement.value;
-                                                this.showCardEffect(`+${this.player.blockIncrement.value} Bloc`, this.player.x, this.player.y - 50);
-                                                this.player.updateHealthBar();
-                                            }
-                                            
-                                            this.endTurnBtn.setInteractive({ useHandCursor: true });
-                                            this.endTurnBtn.setFillStyle(0x7b3f9e);
-                                            this.endTurnText.setAlpha(1);
-                                        });
-                                    }
+                        this.tweens.add({
+                            targets: enemy,
+                            x: startX - 100,
+                            duration: 200,
+                            yoyo: true,
+                            onYoyo: () => {
+                                if (this.player.buffs.evasion && this.player.buffs.evasion.duration > 0) {
+                                    this.showCardEffect('Evaded!', this.player.x, this.player.y - 50);
+                                    this.player.buffs.evasion.duration--;
+                                    if (this.player.buffs.evasion.duration <= 0) delete this.player.buffs.evasion;
+                                } else {
+                                    this.sound.play('monster_attack');
+                                    this.playAttackEffect(this.player.x, this.player.y);
+                                    this.player.takeDamage(damage);
+                                    this.checkDefeat();
                                 }
-                            });
+                            },
+                            onComplete: () => {
+                                Object.keys(enemy.debuffs).forEach(key => {
+                                    if (enemy.debuffs[key].duration) {
+                                        enemy.debuffs[key].duration--;
+                                        if (enemy.debuffs[key].duration <= 0) {
+                                            delete enemy.debuffs[key];
+                                            enemy.updateHealthBar();
+                                        }
+                                    }
+                                });
+
+                                if (i === activeEnemies.length - 1) {
+                                    this.time.delayedCall(300, () => {
+                                        if (this.player.temporaryShield) {
+                                            this.player.temporaryShield = 0;
+                                            this.player.updateHealthBar();
+                                        }
+
+                                        if (this.player.blockIncrement && this.player.blockIncrement.value > 0) {
+                                            this.player.shield += this.player.blockIncrement.value;
+                                            this.showCardEffect(`+${this.player.blockIncrement.value} Bloc`, this.player.x, this.player.y - 50);
+                                            this.player.updateHealthBar();
+                                        }
+
+                                        this.endTurnBtn.setInteractive({ useHandCursor: true });
+                                        this.endTurnBtn.setFillStyle(0x7b3f9e);
+                                        this.endTurnText.setAlpha(1);
+                                    });
+                                }
+                            }
                         });
                     });
-                } else {
-                    this.skipNextEnemyTurn = false;
-                    
-                    if (this.player.temporaryShield) {
-                        this.player.temporaryShield = 0;
-                        this.player.updateHealthBar();
-                    }
-                    
-                    if (this.player.blockIncrement && this.player.blockIncrement.value > 0) {
-                        this.player.shield += this.player.blockIncrement.value;
-                        this.showCardEffect(`+${this.player.blockIncrement.value} Bloc`, this.player.x, this.player.y - 50);
-                        this.player.updateHealthBar();
-                    }
-                    
-                    this.endTurnBtn.setInteractive({ useHandCursor: true });
-                    this.endTurnBtn.setFillStyle(0x7b3f9e);
-                    this.endTurnText.setAlpha(1);
+                });
+            } else {
+                this.skipNextEnemyTurn = false;
+
+                if (this.player.temporaryShield) {
+                    this.player.temporaryShield = 0;
+                    this.player.updateHealthBar();
                 }
-            });
+
+                if (this.player.blockIncrement && this.player.blockIncrement.value > 0) {
+                    this.player.shield += this.player.blockIncrement.value;
+                    this.showCardEffect(`+${this.player.blockIncrement.value} Bloc`, this.player.x, this.player.y - 50);
+                    this.player.updateHealthBar();
+                }
+
+                this.endTurnBtn.setInteractive({ useHandCursor: true });
+                this.endTurnBtn.setFillStyle(0x7b3f9e);
+                this.endTurnText.setAlpha(1);
+            }
+        });
     }
 
 
