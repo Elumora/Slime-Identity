@@ -38,6 +38,7 @@ export class GameScene extends Scene {
         this.discardCount = 0;
         this.discardedCards = 0;
         this.currentGameDamageDealt = 0;
+        this.nextAttackDuplicated = false;
 
         const endTurnBtn = this.add.rectangle(1750, 100, 180, 60, 0x7b3f9e);
         endTurnBtn.setStrokeStyle(3, 0xff_ff_ff);
@@ -447,17 +448,6 @@ export class GameScene extends Scene {
     endTurn() {
         this.cardsPlayedThisTurn = 0;
         
-        if (this.player.temporaryShield) {
-            this.player.temporaryShield = 0;
-            this.player.updateHealthBar();
-        }
-        
-        if (this.player.blockIncrement && this.player.blockIncrement.value > 0) {
-            this.player.shield += this.player.blockIncrement.value;
-            this.showCardEffect(`+${this.player.blockIncrement.value} Bloc`, this.player.x, this.player.y - 50);
-            this.player.updateHealthBar();
-        }
-        
         const cardsToRefill = this.maxHandSize - this.hand.length;
 
         this.time.delayedCall(200, () => {
@@ -515,12 +505,38 @@ export class GameScene extends Scene {
                                             }
                                         }
                                     });
+                                    
+                                    if (i === activeEnemies.length - 1) {
+                                        this.time.delayedCall(300, () => {
+                                            if (this.player.temporaryShield) {
+                                                this.player.temporaryShield = 0;
+                                                this.player.updateHealthBar();
+                                            }
+                                            
+                                            if (this.player.blockIncrement && this.player.blockIncrement.value > 0) {
+                                                this.player.shield += this.player.blockIncrement.value;
+                                                this.showCardEffect(`+${this.player.blockIncrement.value} Bloc`, this.player.x, this.player.y - 50);
+                                                this.player.updateHealthBar();
+                                            }
+                                        });
+                                    }
                                 }
                             });
                         });
                     });
                 } else {
                     this.skipNextEnemyTurn = false;
+                    
+                    if (this.player.temporaryShield) {
+                        this.player.temporaryShield = 0;
+                        this.player.updateHealthBar();
+                    }
+                    
+                    if (this.player.blockIncrement && this.player.blockIncrement.value > 0) {
+                        this.player.shield += this.player.blockIncrement.value;
+                        this.showCardEffect(`+${this.player.blockIncrement.value} Bloc`, this.player.x, this.player.y - 50);
+                        this.player.updateHealthBar();
+                    }
                 }
             });
         });

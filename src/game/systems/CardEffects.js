@@ -33,9 +33,9 @@ export class CardEffects {
         }
 
         let multiplier = 1;
-        if (scene.player.nextAttackDuplicated) {
+        if (scene.nextAttackDuplicated) {
             multiplier = 2;
-            scene.player.nextAttackDuplicated = false;
+            scene.nextAttackDuplicated = false;
         }
 
         if (isAOE) {
@@ -144,7 +144,8 @@ export class CardEffects {
                 scene.showCardEffect('Fatigue ajoutée', centerX, 150);
                 break;
             case 'duplicate':
-                scene.player.nextAttackDuplicated = true;
+                if (!scene.nextAttackDuplicated) scene.nextAttackDuplicated = false;
+                scene.nextAttackDuplicated = true;
                 scene.showCardEffect('Prochaine attaque x2', scene.player.x, scene.player.y - 50);
                 break;
             case 'manaTemporary':
@@ -176,7 +177,7 @@ export class CardEffects {
                 scene.player.blockOnDiscard = effect.value;
                 break;
             case 'copyLastPlayed':
-                if (scene.lastPlayedCard && scene.lastPlayedCard.name !== card.cardData.name) {
+                if (scene.lastPlayedCard) {
                     const originalCard = CARD_DATABASE.find(c => c.name === scene.lastPlayedCard.name);
                     if (originalCard) {
                         const copy = { ...originalCard, cost: originalCard.cost + effect.costIncrease };

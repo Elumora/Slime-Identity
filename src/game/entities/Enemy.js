@@ -106,6 +106,10 @@ export class Enemy extends Phaser.GameObjects.Container {
             this.scene.currentGameDamageDealt += actualDamage;
         }
 
+        if (this.isPlayer && actualDamage > 0 && this.scene && this.scene.showCardEffect) {
+            this.scene.showCardEffect(`-${actualDamage}`, this.x, this.y - 50);
+        }
+
         if (this.scene && this.scene.tweens) {
             this.scene.tweens.add({
                 targets: this.sprite,
