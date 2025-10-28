@@ -58,13 +58,42 @@ export class GameScene extends Scene {
         }).setOrigin(0.5);
         this.updateManaDisplay();
 
-        this.add.image(100, 1000, 'deck').setScale(0.2);
-        this.add.circle(97, 960, 18, 0xff0000);
+        const deckParticles = this.add.particles(100, 1000, 'mana', {
+            speed: { min: 20, max: 50 },
+            scale: { start: 0.3, end: 0 },
+            alpha: { start: 0.6, end: 0 },
+            lifespan: 2000,
+            frequency: 50,
+            angle: { min: -120, max: -60 },
+            blendMode: 'ADD'
+        }).setDepth(1);
+
+        this.add.image(100, 1000, 'deck').setScale(0.2).setDepth(2);
+        this.add.circle(97, 960, 18, 0xff0000).setDepth(3);
         this.deckCountText = this.add.text(97, 960, this.deck.length.toString(), {
             fontSize: '16px',
             color: '#ffffff',
             fontStyle: 'bold'
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setDepth(4);
+
+        const discardParticles = this.add.particles(1850, 1000, 'mana', {
+            speed: { min: 20, max: 50 },
+            scale: { start: 0.3, end: 0 },
+            alpha: { start: 0.8, end: 0 },
+            lifespan: 2000,
+            frequency: 50,
+            angle: { min: 0, max: 360 },
+            tint: [0xff0000, 0xff4500, 0xff6600],
+            blendMode: 'ADD'
+        }).setDepth(1);
+
+        this.add.image(1850, 1000, 'defausse').setScale(0.2).setDepth(2);
+        this.add.circle(1847, 960, 18, 0xff0000).setDepth(3);
+        this.discardCountText = this.add.text(1847, 960, this.discard.length.toString(), {
+            fontSize: '16px',
+            color: '#ffffff',
+            fontStyle: 'bold'
+        }).setOrigin(0.5).setDepth(4);
 
         this.anims.create({
             key: 'impact',
@@ -208,8 +237,15 @@ export class GameScene extends Scene {
         if (index > -1) {
             this.hand.splice(index, 1);
             this.discard.push(card.cardData);
+            this.updateDiscardDisplay();
         }
         this.reorganizeHand();
+    }
+
+    updateDiscardDisplay() {
+        if (this.discardCountText) {
+            this.discardCountText.setText(this.discard.length.toString());
+        }
     }
 
     reorganizeHand() {
@@ -473,6 +509,7 @@ export class GameScene extends Scene {
         this.cardsPlayedThisTurn = 0;
 
         this.discardHand();
+        this.updateDiscardDisplay();
 
         this.time.delayedCall(400, () => {
             this.mana = this.maxMana;
