@@ -68,7 +68,9 @@ export class GameScene extends Scene {
             blendMode: 'ADD'
         }).setDepth(1);
 
-        this.add.image(100, 1000, 'deck').setScale(0.2).setDepth(2);
+        const deckIcon = this.add.image(100, 1000, 'deck').setScale(0.2).setDepth(2);
+        deckIcon.setInteractive({ useHandCursor: true });
+        deckIcon.on('pointerdown', () => this.showDeckView());
         this.add.circle(97, 960, 18, 0xff0000).setDepth(3);
         this.deckCountText = this.add.text(97, 960, this.deck.length.toString(), {
             fontSize: '16px',
@@ -109,6 +111,7 @@ export class GameScene extends Scene {
             gameObject.emit('drag', pointer, dragX, dragY);
         });
 
+        this.deckViewActive = false;
         this.scene.launch('DevGrid');
 
         EventBus.emit('current-scene-ready', this);
@@ -500,6 +503,79 @@ export class GameScene extends Scene {
         this.discard = [];
         this.updateDeckDisplay();
         this.showCardEffect('Défausse mélangée', 960, 150);
+    }
+
+    showDeckView() {
+        if (this.deckViewActive) return;
+        this.deckViewActive = true;
+
+        const overlay = this.add.rectangle(960, 540, 1920, 1080, 0x000000, 0.7).setDepth(1000).setInteractive();
+
+        const scrollHeight = Math.ceil(this.deck.length / 4) * 350;
+        const maskShape = this.make.graphics();
+        maskShape.fillRect(260, 0, 1400, 1080);
+        const mask = maskShape.createGeometryMask();
+
+        const container = this.add.container(0, 0).setDepth(1001);
+        container.setMask(mask);
+
+        this.deck.forEach((cardData, i) => {
+            const col = i % 5;
+            const row = Math.floor(i / 5);
+            const x = 480 + col * 250;
+            const y = 240 + row * 360;
+            const card = new Card(this, x, y, cardData);
+            card.setScale(0.8);
+            card.disableInteractive();
+            container.add(card);
+        });
+
+        let scrollY = 0;
+        const maxScroll = Math.max(0, scrollHeight - 800);
+        let dragStartY = 0;
+        let isDragging = false;
+        let velocity = 0;
+
+        const scrollZone = this.add.rectangle(960, 540, 1200, 800, 0x000000, 0).setDepth(1001).setInteractive();
+
+        scrollZone.on('pointerdown', (pointer) => {
+            isDragging = true;
+            dragStartY = pointer.y;
+            velocity = 0;
+        });
+
+        this.input.on('pointermove', (pointer) => {
+            if (!isDragging || !this.deckViewActive) return;
+            const delta = pointer.y - dragStartY;
+            velocity = delta;
+            scrollY = Phaser.Math.Clamp(scrollY + delta, -maxScroll, 0);
+            container.y = 140 + scrollY;
+            dragStartY = pointer.y;
+        });
+
+        this.input.on('pointerup', () => {
+            isDragging = false;
+        });
+
+        this.input.on('wheel', (pointer, gameObjects, deltaX, deltaY) => {
+            if (!this.deckViewActive) return;
+            scrollY = Phaser.Math.Clamp(scrollY + deltaY * 0.5, -maxScroll, 0);
+            container.y = 140 + scrollY;
+        });
+
+        const backBtn = this.add.rectangle(200, 1000, 150, 50, 0x7b3f9e).setDepth(1002).setInteractive({ useHandCursor: true });
+        backBtn.setStrokeStyle(3, 0xffffff);
+        const backText = this.add.text(200, 1000, 'Retour', { fontSize: '24px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5).setDepth(1003);
+
+        backBtn.on('pointerdown', () => {
+            this.deckViewActive = false;
+            overlay.destroy();
+            container.destroy();
+            maskShape.destroy();
+            scrollZone.destroy();
+            backBtn.destroy();
+            backText.destroy();
+        });
     }
 
     endTurn() {
