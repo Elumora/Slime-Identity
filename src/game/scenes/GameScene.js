@@ -445,24 +445,34 @@ export class GameScene extends Scene {
         this.hand = [];
     }
 
+    shuffleDiscardIntoDeck() {
+        this.deck = [...this.discard].sort(() => Math.random() - 0.5);
+        this.discard = [];
+        this.showCardEffect('Défausse mélangée', 960, 150);
+    }
+
     endTurn() {
         this.endTurnBtn.disableInteractive();
         this.endTurnBtn.setFillStyle(0x555555);
         this.endTurnText.setAlpha(0.5);
         this.cardsPlayedThisTurn = 0;
         
-        const cardsToRefill = this.maxHandSize - this.hand.length;
+        this.discardHand();
 
-        this.time.delayedCall(200, () => {
+        this.time.delayedCall(400, () => {
             this.mana = this.maxMana;
             this.updateManaDisplay();
 
-            if (cardsToRefill > 0) {
-                this.drawCards(cardsToRefill);
+            if (this.deck.length < this.maxHandSize && this.discard.length > 0) {
+                this.shuffleDiscardIntoDeck();
             }
 
-            this.time.delayedCall(1200, () => {
-                if (!this.skipNextEnemyTurn) {
+            this.drawCards(this.maxHandSize);
+        });
+
+        this.time.delayedCall(1200, () => {
+
+            if (!this.skipNextEnemyTurn) {
                     const activeEnemies = this.enemies.filter(e => e.active);
                     activeEnemies.forEach((enemy, i) => {
                         this.time.delayedCall(i * 800, () => {
@@ -550,7 +560,6 @@ export class GameScene extends Scene {
                     this.endTurnText.setAlpha(1);
                 }
             });
-        });
     }
 
 
