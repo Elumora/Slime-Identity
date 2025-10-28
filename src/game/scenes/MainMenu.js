@@ -1,5 +1,6 @@
 import { Scene } from 'phaser';
 import { EventBus } from '../EventBus';
+import { GameProgress } from '../systems/GameProgress';
 
 export class MainMenu extends Scene {
     constructor() {
@@ -242,6 +243,26 @@ export class MainMenu extends Scene {
             emitZone: { type: 'random', source: emitZone }
         }).setDepth(0).stop();
 
+        const progress = GameProgress.load();
+        const hasGameStarted = progress.currentPathIndex > 0;
+
+        const continueGame = this.add.text(menuX, menuY - spacing, 'Continuer', buttonStyle)
+            .setInteractive({ useHandCursor: true })
+            .setVisible(hasGameStarted)
+            .on('pointerdown', () => {
+                this.sound.stopAll();
+                this.scene.start('MapScene');
+            })
+            .on('pointerover', () => {
+                continueGame.setColor('#ffff00');
+                emitZone.setSize(continueGame.width, continueGame.height);
+                buttonParticles.setPosition(continueGame.x, continueGame.y).start();
+            })
+            .on('pointerout', () => {
+                continueGame.setColor('#ffffff');
+                buttonParticles.stop();
+            });
+
         const newGame = this.add.text(menuX, menuY, 'Nouvelle Partie', buttonStyle)
             .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => this.showQuestModal())
@@ -254,11 +275,6 @@ export class MainMenu extends Scene {
                 newGame.setColor('#ffffff');
                 buttonParticles.stop();
             });
-
-        // const continueGame = this.add.text(menuX, menuY + spacing, 'Continuer', buttonStyle)
-        //     .setInteractive({ useHandCursor: true })
-        //     .on('pointerover', () => continueGame.setColor('#ffff00'))
-        //     .on('pointerout', () => continueGame.setColor('#ffffff'));
 
         const stats = this.add.text(menuX, menuY + spacing * 1, 'Statistiques', buttonStyle)
             .setInteractive({ useHandCursor: true })
@@ -326,10 +342,12 @@ export class MainMenu extends Scene {
         }).setOrigin(0.5, 0.6).setDepth(3);
 
         btnYes.on('pointerdown', () => {
+            GameProgress.clear();
             this.sound.stopAll();
             this.scene.start('Narration');
         });
         btnNo.on('pointerdown', () => {
+            GameProgress.clear();
             this.sound.stopAll();
             this.scene.start('MapScene');
         });
