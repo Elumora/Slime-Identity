@@ -82,12 +82,13 @@ export class Preloader extends Scene {
         this.load.image('battleSpring', 'assets/Background/spring/6.png');
 
 
-
+        // Story assets
         this.load.image('story-01', 'assets/Story/story-01.jpeg');
         this.load.image('story-02', 'assets/Story/story-02.jpeg');
         this.load.image('story-03', 'assets/Story/story-03.jpeg');
         this.load.image('story-04', 'assets/Story/story-04.jpeg');
         this.load.audio('narration-intro', 'assets/Audio/Story/01-introduction-fr.mp3');
+        this.load.audio('story-music', 'assets/Audio/BGM/story-music.mp3')
     }
 
     create() {

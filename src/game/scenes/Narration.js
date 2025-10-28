@@ -24,9 +24,9 @@ export class Narration extends Scene {
             { time: 500, text: "Il n'a ni nom\u2026 ni forme d\u00e9finie." },
             { time: 5500, text: "Il s'\u00e9veille, seul, dans un monde\nqui ne lui dit rien." },
             { time: 13500, text: "Un battement. Une pulsation.\nUne conscience." },
-            { time: 19500, text: "Ce slime\u2026 c'est toi." },
-            { time: 23500, text: "Tu ignores ce que tu es." },
-            { time: 26500, text: "Tu ignores pourquoi tu es l\u00e0." },
+            { time: 20500, text: "Ce slime\u2026 c'est toi." },
+            { time: 24500, text: "Tu ignores ce que tu es." },
+            { time: 27000, text: "Tu ignores pourquoi tu es l\u00e0." },
             { time: 29500, text: "Mais quelque chose t'appelle." },
             { time: 33500, text: "Des fragments \u00e9parpill\u00e9s\ndans les ruines du monde." },
             { time: 38500, text: "Des \u00e9clats de m\u00e9moire, de pouvoir\u2026\nd'identit\u00e9." },
@@ -49,7 +49,9 @@ export class Narration extends Scene {
             });
         });
 
-        this.time.delayedCall(1000, () => this.sound.play('narration-intro'));
+        this.sound.play('story-music', { volume: 0.3 });
+
+        this.time.delayedCall(1000, () => this.sound.play('narration-intro', { volume: 1 }));
 
         this.tweens.add({
             targets: bg,
@@ -147,7 +149,7 @@ export class Narration extends Scene {
                             duration: 300,
                             ease: 'Quad.easeOut',
                             delay,
-                            onStart: () => this.sound.play('jump', { volume: 0.5 })
+                            onStart: () => this.sound.play('jump', { volume: 0.3 })
                         });
                         this.tweens.add({
                             targets: slime,
@@ -174,9 +176,9 @@ export class Narration extends Scene {
                                         ease: 'Sine.easeInOut',
                                         delay: 200
                                     });
-                                    this.time.delayedCall(8000, () => {
+                                    this.time.delayedCall(7000, () => {
                                         subtitle.destroy();
-                                        this.scene.start('Game');
+                                        this.scene.start('GameScene');
                                     });
                                 }
                             }
