@@ -158,7 +158,7 @@ export class GameScene extends Scene {
         cardData.forEach((data, i) => {
             this.time.delayedCall(i * 150, () => {
                 const numCards = 7;
-                const { x, y, rotation } = getCardPosition(i, numCards, 1200, Math.PI / 4, true);
+                const { x, y, rotation } = getCardPosition(i, numCards);
                 const depth = i + 1;
 
                 const card = new Card(this, 960, 350, data);
@@ -200,7 +200,7 @@ export class GameScene extends Scene {
         const numCards = this.hand.length;
         if (numCards === 0) return;
         this.hand.forEach((card, i) => {
-            const { x, y, rotation } = getCardPosition(i, numCards, 1200, Math.PI / 4, true);
+            const { x, y, rotation } = getCardPosition(i, numCards);
             const depth = i + 1;
 
             card.setHomePosition(x, y, rotation, depth);
@@ -322,7 +322,7 @@ export class GameScene extends Scene {
 
             const cardData = this.deck.pop();
             const currentIndex = this.hand.length;
-            const { x, y, rotation } = getCardPosition(currentIndex, this.hand.length + 1, 1200, Math.PI / 4, true);
+            const { x, y, rotation } = getCardPosition(currentIndex, this.hand.length + 1);
             const depth = currentIndex + 1;
 
             const card = new Card(this, 960, 350, cardData);
@@ -395,7 +395,7 @@ export class GameScene extends Scene {
         const cardData = this.discard.splice(randomIndex, 1)[0];
 
         const numCards = this.hand.length;
-        const { x, y, rotation } = getCardPosition(numCards, numCards + 1, 1200, Math.PI / 4, true);
+        const { x, y, rotation } = getCardPosition(numCards, numCards + 1);
         const depth = numCards + 1;
 
         const card = new Card(this, 960, 350, cardData);
@@ -506,18 +506,23 @@ export class GameScene extends Scene {
 
 }
 
-function getCardPosition(i, numCards, arcRadius, arcAngle, inverted = false) {
+function getCardPosition(i, numCards) {
+    const splinePoints = [
+        { x: 560, y: 1080 },
+        { x: 940, y: 1000 },
+        { x: 1500, y: 1080 }
+    ];
+
     if (numCards === 1) {
-        return { x: 960, y: 950, rotation: 0 };
+        return { x: splinePoints[1].x, y: splinePoints[1].y, rotation: 0 };
     }
 
-    const step = arcAngle / (numCards - 1);
-    const angle = -arcAngle / 2 + i * step;
+    const t = i / (numCards - 1);
+    const curve = new Phaser.Curves.Spline(splinePoints);
+    const point = curve.getPoint(t);
 
-    const x = 960 + Math.sin(angle) * arcRadius;
-    const y = 950 + (inverted ? (1 - Math.cos(angle)) : (Math.cos(angle) - 1)) * arcRadius;
+    const tangent = curve.getTangent(t);
+    const rotation = Math.atan2(tangent.y, tangent.x);
 
-    const rotation = (inverted ? 1 : -1) * angle * 0.4;
-
-    return { x, y, rotation };
+    return { x: point.x, y: point.y, rotation };
 }
