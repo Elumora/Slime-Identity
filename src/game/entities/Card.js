@@ -108,11 +108,10 @@ export class Card extends Phaser.GameObjects.Container {
     onClick() {
         if (this.isCentered) {
             this.uncenter();
-            this.scene.sound.play(`card_draw${Math.floor(Math.random() * 5) + 1}`);
-
+            if (this.scene.sound) this.scene.sound.play(`card_draw${Math.floor(Math.random() * 5) + 1}`);
         } else {
-            this.scene.sound.play('card_place');
-            this.scene.uncenterAllCards();
+            if (this.scene.sound) this.scene.sound.play('card_place');
+            if (this.scene.uncenterAllCards) this.scene.uncenterAllCards();
             this.isCentered = true;
             const centerX = this.scene.cameras.main.centerX;
             const centerY = this.scene.cameras.main.centerY;
@@ -175,14 +174,14 @@ export class Card extends Phaser.GameObjects.Container {
     }
 
     onDragStart(pointer) {
-        if (this.scene.mana < this.cardData.cost) {
+        if (this.scene.mana !== undefined && this.scene.mana < this.cardData.cost) {
             this.isDragging = false;
             return;
         }
         if (this.isCentered) {
             this.isCentered = false;
         }
-        this.scene.uncenterAllCards();
+        if (this.scene.uncenterAllCards) this.scene.uncenterAllCards();
         this.isDragging = true;
         this.setScale(1.3);
         this.setRotation(0);
@@ -203,10 +202,10 @@ export class Card extends Phaser.GameObjects.Container {
 
         const target = this.getTarget(pointer);
 
-        if (target && this.scene.spendMana(this.cardData.cost)) {
-            if (this.cardData.sound) {
+        if (target && this.scene.spendMana && this.scene.spendMana(this.cardData.cost)) {
+            if (this.cardData.sound && this.scene.sound) {
                 this.scene.sound.play(this.cardData.sound);
-            } else {
+            } else if (this.scene.sound) {
                 this.scene.sound.play('card_play');
             }
             this.executeCard(target);
@@ -222,18 +221,25 @@ export class Card extends Phaser.GameObjects.Container {
     }
 
     getTarget(pointer) {
+        if (!this.scene.enemies && !this.scene.player) {
+            return null;
+        }
+
         const { targetType, areaType } = this.cardData;
 
         if (areaType === AREA_TYPES.AOE || targetType === TARGET_TYPES.ALL_ENEMIES) {
-            return this.scene.enemies;
+            return this.scene.enemies || null;
         }
 
         if (targetType === TARGET_TYPES.SELF || targetType === TARGET_TYPES.NONE) {
+            if (!this.scene.player) return null;
             const playerDistance = Phaser.Math.Distance.Between(pointer.x, pointer.y, this.scene.player.x, this.scene.player.y);
             return playerDistance < 150 ? this.scene.player : null;
         }
 
         const enemies = this.scene.enemies;
+        if (!enemies || !Array.isArray(enemies)) return null;
+
         let hitEnemy = null;
         let minDistance = Infinity;
 
