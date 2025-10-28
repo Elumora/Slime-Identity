@@ -180,7 +180,7 @@ export class Narration extends Scene {
                                 });
                                 this.time.delayedCall(7000, () => {
                                     subtitle.destroy();
-                                    this.scene.start('GameScene');
+                                    this.scene.start('MapScene');
                                 });
                             }
                         });

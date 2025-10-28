@@ -40,15 +40,17 @@ export class GameScene extends Scene {
         this.currentGameDamageDealt = 0;
         this.nextAttackDuplicated = false;
 
-        this.endTurnBtn = this.add.rectangle(1750, 100, 180, 60, 0x7b3f9e);
-        this.endTurnBtn.setStrokeStyle(3, 0xff_ff_ff);
+        this.endTurnBtn = this.add.image(1800, 850, 'button-blue').setScale(0.4).setDepth(100);
         this.endTurnBtn.setInteractive({ useHandCursor: true });
         this.endTurnBtn.on('pointerdown', () => this.endTurn());
-        this.endTurnText = this.add.text(1750, 100, 'End Turn', {
-            fontSize: '24px',
+        this.endTurnText = this.add.text(1800, 850, 'Fin du tour', {
+            fontSize: '18px',
             color: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 4,
             fontStyle: 'bold'
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setDepth(101);
+        this.endTurnBtnActive = true;
 
         this.add.image(170, 850, 'mana').setScale(0.5);
         this.manaText = this.add.text(170, 850, '4', {
@@ -654,7 +656,7 @@ export class GameScene extends Scene {
 
     endTurn() {
         this.endTurnBtn.disableInteractive();
-        this.endTurnBtn.setFillStyle(0x555555);
+        this.endTurnBtn.setTint(0x808080);
         this.endTurnText.setAlpha(0.5);
         this.cardsPlayedThisTurn = 0;
 
@@ -735,7 +737,7 @@ export class GameScene extends Scene {
                                         }
 
                                         this.endTurnBtn.setInteractive({ useHandCursor: true });
-                                        this.endTurnBtn.setFillStyle(0x7b3f9e);
+                                        this.endTurnBtn.clearTint();
                                         this.endTurnText.setAlpha(1);
                                     });
                                 }
@@ -758,7 +760,7 @@ export class GameScene extends Scene {
                 }
 
                 this.endTurnBtn.setInteractive({ useHandCursor: true });
-                this.endTurnBtn.setFillStyle(0x7b3f9e);
+                this.endTurnBtn.clearTint();
                 this.endTurnText.setAlpha(1);
             }
         });
@@ -771,7 +773,7 @@ function getCardPosition(i, numCards) {
     const splinePoints = [
         { x: 560, y: 1080 },
         { x: 940, y: 1000 },
-        { x: 1500, y: 1080 }
+        { x: 1360, y: 1080 }
     ];
 
     if (numCards === 1) {
