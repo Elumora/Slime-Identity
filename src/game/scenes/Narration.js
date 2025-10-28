@@ -6,7 +6,7 @@ export class Narration extends Scene {
     }
 
     create() {
-        const bg = this.add.rectangle(960, 540, 1920, 1080, 0x000000);
+        const bg = this.add.rectangle(960, 540, 1920, 1080, 0x00_00_00);
         const image = this.add.image(960, 540, 'story-01').setAlpha(0).setScale(1);
 
         const subtitleStyle = {
@@ -23,19 +23,19 @@ export class Narration extends Scene {
         const subtitles = [
             { time: 500, text: "Il n'a ni nom\u2026 ni forme d\u00e9finie." },
             { time: 5500, text: "Il s'\u00e9veille, seul, dans un monde\nqui ne lui dit rien." },
-            { time: 13500, text: "Un battement. Une pulsation.\nUne conscience." },
-            { time: 20500, text: "Ce slime\u2026 c'est toi." },
-            { time: 24500, text: "Tu ignores ce que tu es." },
-            { time: 27000, text: "Tu ignores pourquoi tu es l\u00e0." },
-            { time: 29500, text: "Mais quelque chose t'appelle." },
-            { time: 33500, text: "Des fragments \u00e9parpill\u00e9s\ndans les ruines du monde." },
-            { time: 38500, text: "Des \u00e9clats de m\u00e9moire, de pouvoir\u2026\nd'identit\u00e9." },
-            { time: 43500, text: "Chaque combat te rapproche\nde la v\u00e9rit\u00e9." },
-            { time: 47500, text: "Chaque carte que tu absorbes\nte transforme." },
-            { time: 51500, text: "Trouve les fragments." },
-            { time: 53500, text: "Reconstruis ce que tu \u00e9tais." },
-            { time: 56500, text: "Et d\u00e9couvre\u2026 ce que tu pourrais\ndevenir." },
-            { time: 61000, text: "" }
+            { time: 13_500, text: "Un battement. Une pulsation.\nUne conscience." },
+            { time: 20_500, text: "Ce slime\u2026 c'est toi." },
+            { time: 24_500, text: "Tu ignores ce que tu es." },
+            { time: 27_000, text: "Tu ignores pourquoi tu es l\u00e0." },
+            { time: 29_500, text: "Mais quelque chose t'appelle." },
+            { time: 33_500, text: "Des fragments \u00e9parpill\u00e9s\ndans les ruines du monde." },
+            { time: 38_500, text: "Des \u00e9clats de m\u00e9moire, de pouvoir\u2026\nd'identit\u00e9." },
+            { time: 43_500, text: "Chaque combat te rapproche\nde la v\u00e9rit\u00e9." },
+            { time: 47_500, text: "Chaque carte que tu absorbes\nte transforme." },
+            { time: 51_500, text: "Trouve les fragments." },
+            { time: 53_500, text: "Reconstruis ce que tu \u00e9tais." },
+            { time: 56_500, text: "Et d\u00e9couvre\u2026 ce que tu pourrais\ndevenir." },
+            { time: 61_000, text: "" }
         ];
 
         subtitles.forEach(sub => {
@@ -70,11 +70,11 @@ export class Narration extends Scene {
         this.tweens.add({
             targets: image,
             scale: 1.2,
-            duration: 13000,
+            duration: 13_000,
             ease: 'Sine.easeInOut'
         });
 
-        this.time.delayedCall(14000, () => {
+        this.time.delayedCall(14_000, () => {
             this.tweens.add({
                 targets: image,
                 alpha: 0,
@@ -84,14 +84,14 @@ export class Narration extends Scene {
                     this.tweens.add({
                         targets: image,
                         scale: 1,
-                        duration: 13000,
+                        duration: 13_000,
                         ease: 'Sine.easeInOut'
                     });
                 }
             });
         });
 
-        this.time.delayedCall(28000, () => {
+        this.time.delayedCall(28_000, () => {
             this.tweens.add({
                 targets: image,
                 alpha: 0,
@@ -101,14 +101,14 @@ export class Narration extends Scene {
                     this.tweens.add({
                         targets: image,
                         scale: 1.2,
-                        duration: 13000,
+                        duration: 13_000,
                         ease: 'Sine.easeInOut'
                     });
                 }
             });
         });
 
-        this.time.delayedCall(42000, () => {
+        this.time.delayedCall(42_000, () => {
             this.tweens.add({
                 targets: image,
                 alpha: 0,
@@ -118,14 +118,14 @@ export class Narration extends Scene {
                     this.tweens.add({
                         targets: image,
                         scale: 1,
-                        duration: 10000,
+                        duration: 10_000,
                         ease: 'Sine.easeInOut'
                     });
                 }
             });
         });
 
-        this.time.delayedCall(52500, () => {
+        this.time.delayedCall(52_500, () => {
             this.tweens.add({
                 targets: image,
                 alpha: 0,
@@ -160,27 +160,28 @@ export class Narration extends Scene {
                             ease: 'Quad.easeIn',
                             delay: delay + 300,
                             onComplete: () => {
-                                if (i === jumps - 1) {
-                                    this.tweens.add({
-                                        targets: slime,
-                                        scaleX: 0.32,
-                                        scaleY: 0.32,
-                                        duration: 200
-                                    });
-                                    this.tweens.add({
-                                        targets: slime,
-                                        scaleY: '+=0.02',
-                                        duration: 1500,
-                                        yoyo: true,
-                                        repeat: -1,
-                                        ease: 'Sine.easeInOut',
-                                        delay: 200
-                                    });
-                                    this.time.delayedCall(7000, () => {
-                                        subtitle.destroy();
-                                        this.scene.start('GameScene');
-                                    });
+                                if (i !== jumps - 1) {
+                                    return;
                                 }
+                                this.tweens.add({
+                                    targets: slime,
+                                    scaleX: 0.32,
+                                    scaleY: 0.32,
+                                    duration: 200
+                                });
+                                this.tweens.add({
+                                    targets: slime,
+                                    scaleY: '+=0.02',
+                                    duration: 1500,
+                                    yoyo: true,
+                                    repeat: -1,
+                                    ease: 'Sine.easeInOut',
+                                    delay: 200
+                                });
+                                this.time.delayedCall(7000, () => {
+                                    subtitle.destroy();
+                                    this.scene.start('GameScene');
+                                });
                             }
                         });
                         delay += 600;
