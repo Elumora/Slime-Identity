@@ -201,14 +201,14 @@ export class Card extends Phaser.GameObjects.Container {
         }
         this.isDragging = false;
 
+        if (this.cardData.effects && this.cardData.effects.some(e => e.type === 'unplayable')) {
+            this.returnToHome();
+            return;
+        }
+
         const target = this.getTarget(pointer);
 
         if (target && this.scene.spendMana && this.scene.spendMana(this.cardData.cost)) {
-            if (this.cardData.sound && this.scene.sound) {
-                this.scene.sound.play(this.cardData.sound);
-            } else if (this.scene.sound) {
-                this.scene.sound.play('card_play');
-            }
             this.executeCard(target);
         } else {
             this.returnToHome();
@@ -216,9 +216,9 @@ export class Card extends Phaser.GameObjects.Container {
     }
 
     requiresTarget() {
-        const { type, targetType, areaType } = this.cardData;
+        const { targetType, areaType } = this.cardData;
         if (areaType === AREA_TYPES.AOE || targetType === TARGET_TYPES.ALL_ENEMIES) return false;
-        return targetType === TARGET_TYPES.ENEMY || type === CARD_TYPES.ATTACK || type === CARD_TYPES.DEBUFF;
+        return targetType === TARGET_TYPES.ENEMY;
     }
 
     getTarget(pointer) {
@@ -258,6 +258,19 @@ export class Card extends Phaser.GameObjects.Container {
     }
 
     executeCard(target) {
+        if (this.cardData.sound && this.scene.sound) {
+            this.scene.sound.play(this.cardData.sound);
+        } else if (this.scene.sound) {
+            this.scene.sound.play('card_play');
+        }
+        
+        if (this.scene.lastPlayedCard !== undefined) {
+            this.scene.lastPlayedCard = this.cardData;
+        }
+        if (this.scene.cardsPlayedThisTurn !== undefined) {
+            this.scene.cardsPlayedThisTurn++;
+        }
+        
         CardEffects.execute(this, this.scene, target);
     }
 
