@@ -58,6 +58,14 @@ export class GameScene extends Scene {
         }).setOrigin(0.5);
         this.updateManaDisplay();
 
+        this.add.image(100, 1000, 'deck').setScale(0.2);
+        this.add.circle(97, 960, 18, 0xff0000);
+        this.deckCountText = this.add.text(97, 960, this.deck.length.toString(), {
+            fontSize: '16px',
+            color: '#ffffff',
+            fontStyle: 'bold'
+        }).setOrigin(0.5);
+
         this.anims.create({
             key: 'impact',
             frames: this.anims.generateFrameNumbers('effect', { start: 0, end: 4 }),
@@ -161,6 +169,7 @@ export class GameScene extends Scene {
 
         const numCardsToDeal = Math.min(5, this.deck.length);
         const cardData = this.deck.splice(0, numCardsToDeal);
+        this.updateDeckDisplay();
 
         cardData.forEach((data, i) => {
             this.time.delayedCall(i * 150, () => {
@@ -316,6 +325,10 @@ export class GameScene extends Scene {
         this.manaText.setText(this.mana.toString());
     }
 
+    updateDeckDisplay() {
+        this.deckCountText.setText(this.deck.length.toString());
+    }
+
     uncenterAllCards() {
         this.hand.forEach(card => card.uncenter());
     }
@@ -328,6 +341,7 @@ export class GameScene extends Scene {
             }
 
             const cardData = this.deck.pop();
+            this.updateDeckDisplay();
             const currentIndex = this.hand.length;
             const { x, y, rotation } = getCardPosition(currentIndex, this.hand.length + 1);
             const depth = currentIndex + 1;
@@ -448,6 +462,7 @@ export class GameScene extends Scene {
     shuffleDiscardIntoDeck() {
         this.deck = [...this.discard].sort(() => Math.random() - 0.5);
         this.discard = [];
+        this.updateDeckDisplay();
         this.showCardEffect('Défausse mélangée', 960, 150);
     }
 
