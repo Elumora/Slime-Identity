@@ -247,7 +247,23 @@ export class GameScene extends Scene {
             this.discard.push(card.cardData);
             this.updateDiscardDisplay();
         }
-        this.reorganizeHand();
+        
+        card.setDepth(500);
+        this.time.delayedCall(350, () => {
+            this.tweens.add({
+                targets: card,
+                x: 1850,
+                y: 1000,
+                scale: 0.2,
+                rotation: 0,
+                duration: 400,
+                ease: 'Power2',
+                onComplete: () => {
+                    card.destroy();
+                    this.reorganizeHand();
+                }
+            });
+        });
     }
 
     updateDiscardDisplay() {

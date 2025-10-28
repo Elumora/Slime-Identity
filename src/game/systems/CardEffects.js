@@ -23,7 +23,6 @@ export class CardEffects {
         }
 
         scene.removeCardFromHand(card);
-        card.destroy();
     }
 
     static executeDamage(card, scene, target, value, isAOE) {
