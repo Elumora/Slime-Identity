@@ -1,3 +1,4 @@
+import { getCardDescription } from '../config/CardDatabase';
 import { AREA_TYPES, CARD_TYPES, TARGET_TYPES } from '../config/CardTypes';
 import { CardEffects } from '../systems/CardEffects';
 
@@ -47,13 +48,13 @@ export class Card extends Phaser.GameObjects.Container {
         }).setOrigin(0.5);
         this.add(this.nameText);
 
-        const description = CardEffects.getDescription(cardData);
+        const description = getCardDescription(cardData);
         if (description) {
-            const desc = scene.add.text(-56, 125, description, {
-                fontSize: '20px',
+            const desc = scene.add.text(-50, 125, description, {
+                fontSize: '18px',
                 color: '#000000',
-                align: 'center',
-                wordWrap: { width: 260 }
+                align: 'left',
+                wordWrap: { width: 245 }
             }).setOrigin(0.25);
             this.add(desc);
         }

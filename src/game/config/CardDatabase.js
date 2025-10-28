@@ -10,7 +10,7 @@ export const RARITY = {
 
 export const CARD_DATABASE = [
     {
-        name: 'Viscous Strike',
+        name: 'Frappe Visqueuse',
         type: CARD_TYPES.ATTACK,
         targetType: TARGET_TYPES.ENEMY,
         areaType: AREA_TYPES.SINGLE,
@@ -20,7 +20,7 @@ export const CARD_DATABASE = [
         icon: 'viscousstrike'
     },
     {
-        name: 'Acid Projection',
+        name: 'Projection Acide',
         type: CARD_TYPES.ATTACK,
         targetType: TARGET_TYPES.ENEMY,
         areaType: AREA_TYPES.SINGLE,
@@ -28,91 +28,78 @@ export const CARD_DATABASE = [
         cost: 2,
         rarity: RARITY.UNCOMMON,
         icon: 'acidprojection',
-        debuffType: 'fragile',
-        debuffValue: 1,
-        debuffDuration: 1
+        effects: [{ type: 'fragile', stacks: 1, duration: 1 }]
     },
     {
-        name: 'Gelatinous Rush',
+        name: 'Ruée Gélatineuse',
         type: CARD_TYPES.ATTACK,
         targetType: TARGET_TYPES.ENEMY,
         areaType: AREA_TYPES.SINGLE,
-        value: 8,
-        cost: 2,
+        value: 4,
+        cost: 0,
         rarity: RARITY.COMMON,
         icon: 'gelatinousrush',
-        block: 2
+        effects: [{ type: 'drawIfFirst', value: 1 }]
     },
     {
-        name: 'Hardening',
+        name: 'Durcissement',
         type: CARD_TYPES.DEFENSE,
         targetType: TARGET_TYPES.SELF,
         areaType: AREA_TYPES.SINGLE,
-        value: 10,
         cost: 2,
         rarity: RARITY.UNCOMMON,
         icon: 'hardening',
-        passiveBlockPerTurn: 1,
-        passiveBlockCap: 5
+        effects: [{ type: 'blockTemporary', value: 10 }, { type: 'blockIncrement', value: 1, cap: 5 }]
     },
     {
-        name: 'Wall',
+        name: 'Armure molle',
         type: CARD_TYPES.DEFENSE,
         targetType: TARGET_TYPES.SELF,
         areaType: AREA_TYPES.SINGLE,
-        value: 10,
-        cost: 2,
+        cost: 1,
         rarity: RARITY.UNCOMMON,
         icon: 'wall',
-        passiveBlockPerTurn: 1,
-        passiveBlockCap: 5
+        effects: [{ type: 'blockTemporary', value: 6 }]
     },
     {
-        name: 'Mana Absorption',
+        name: 'Absorption de Mana',
         type: CARD_TYPES.BUFF,
         targetType: TARGET_TYPES.SELF,
         areaType: AREA_TYPES.SINGLE,
         cost: 0,
         rarity: RARITY.UNCOMMON,
         icon: 'manaabsorption',
-        effect: 'gainManaDrawFatigue',
-        manaGain: 1,
-        draw: 1,
-        addFatigue: 1
+        effects: [{ type: 'manaTemporary', value: 1 }, { type: 'draw', value: 1 }, { type: 'fatigue', value: 1 }]
     },
     {
-        name: 'Controlled Division',
+        name: 'Division Contrôlée',
         type: CARD_TYPES.BUFF,
         targetType: TARGET_TYPES.SELF,
         areaType: AREA_TYPES.SINGLE,
         cost: 1,
         rarity: RARITY.RARE,
         icon: 'controlleddivision',
-        effect: 'duplicateNextAttack'
+        effects: [{ type: 'duplicate' }]
     },
     {
-        name: 'Slowness',
+        name: 'Limon Entravant',
         type: CARD_TYPES.CONTROL,
         targetType: TARGET_TYPES.ENEMY,
         areaType: AREA_TYPES.SINGLE,
-        cost: 2,
+        cost: 1,
         rarity: RARITY.UNCOMMON,
         icon: 'slowness',
-        debuffType: 'slow',
-        debuffValue: 2,
-        debuffDuration: 1
+        effects: [{ type: 'slow', stacks: 1 }]
     },
     {
-        name: 'Fluid Cycle',
+        name: 'Cycle des fluides',
         type: CARD_TYPES.TECHNIQUE,
         targetType: TARGET_TYPES.NONE,
         areaType: AREA_TYPES.SINGLE,
         cost: 0,
         rarity: RARITY.COMMON,
         icon: 'fluidcycle',
-        effect: 'drawDiscard',
-        draw: 2,
-        discard: 2
+        effects: [{ type: 'draw', value: 2 }, { type: 'discard', value: 1 }, { type: 'blockOnDiscard', value: 2 }]
     },
     {
         name: 'Assimilation',
@@ -122,18 +109,94 @@ export const CARD_DATABASE = [
         cost: 1,
         rarity: RARITY.COMMON,
         icon: 'assimilation',
-        manaGain: 1,
-        block: 2
+        effects: [{ type: 'copyLastPlayed', costIncrease: 1, ephemeral: true }]
     },
     {
-        name: 'Viscous Transfusion',
+        name: 'Transfusion Visqueuse',
         type: CARD_TYPES.SUSTAIN,
         targetType: TARGET_TYPES.ENEMY,
         areaType: AREA_TYPES.SINGLE,
-        value: 4,
-        heal: 4,
+        value: 8,
         cost: 2,
         rarity: RARITY.UNCOMMON,
-        icon: 'viscoustransfusion'
+        icon: 'viscoustransfusion',
+        effects: [{ type: 'heal', value: 4 }]
+    },
+    {
+        name: 'Fatigue',
+        type: CARD_TYPES.STATUS,
+        targetType: TARGET_TYPES.NONE,
+        areaType: AREA_TYPES.SINGLE,
+        rarity: RARITY.COMMON,
+        icon: 'fatigue',
+        effects: [{ type: 'unplayable' }]
     }
 ];
+
+export function getCardDescription(cardData) {
+    const parts = [];
+
+    if (cardData.value) {
+        parts.push(`Inflige ${cardData.value} dégâts`);
+    }
+
+    if (cardData.effects) {
+        cardData.effects.forEach(effect => {
+            switch (effect.type) {
+                case 'fragile':
+                    parts.push(`Applique Fragile (${effect.stacks || 1} cumul)`);
+                    break;
+                case 'blockTemporary':
+                    parts.push(`Bloc ${effect.value} pour ce tour`);
+                    break;
+                case 'blockPersistent':
+                    parts.push(`Bloc persistant ${effect.value}`);
+                    break;
+                case 'blockIncrement':
+                    parts.push(`+${effect.value} bloc persistant par tour (max ${effect.cap})`);
+                    break;
+                case 'fatigue':
+                    parts.push(`Ajoute ${effect.value} Fatigue en main`);
+                    break;
+                case 'duplicate':
+                    parts.push('Duplique la prochaine attaque');
+                    break;
+                case 'manaTemporary':
+                    parts.push(`+${effect.value} mana ce tour`);
+                    break;
+                case 'manaPermanent':
+                    parts.push(`+${effect.value} mana permanent`);
+                    break;
+                case 'slow':
+                    parts.push('Ennemi inflige -25% dégâts ce tour');
+                    break;
+                case 'draw':
+                    parts.push(`Pioche ${effect.value} carte${effect.value > 1 ? 's' : ''}`);
+                    break;
+                case 'discard':
+                    parts.push(`Défausse ${effect.value} carte${effect.value > 1 ? 's' : ''}`);
+                    break;
+                case 'blockOnDiscard':
+                    parts.push(`Gagne ${effect.value} Blocage si défausse`);
+                    break;
+                case 'copy':
+                    parts.push('Copie la dernière carte jouée');
+                    break;
+                case 'copyLastPlayed':
+                    parts.push(`Ajoute en main une copie de la dernière carte jouée (coût +${effect.costIncrease}, éphémère)`);
+                    break;
+                case 'heal':
+                    parts.push(`Soigne ${effect.value} PV`);
+                    break;
+                case 'drawIfFirst':
+                    parts.push(`Si jouée en premier, pioche ${effect.value} carte${effect.value > 1 ? 's' : ''}`);
+                    break;
+                case 'unplayable':
+                    parts.push('Impossible de jouer');
+                    break;
+            }
+        });
+    }
+
+    return parts.join('. ') + (parts.length > 0 ? '.' : '');
+}

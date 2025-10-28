@@ -44,6 +44,7 @@ export class Preloader extends Scene {
         this.load.image('fluidcycle', 'assets/Cards/cycle-des-fluides.png');
         this.load.image('assimilation', 'assets/Cards/assimilation.png');
         this.load.image('viscoustransfusion', 'assets/Cards/transfusion-visqueuse.png');
+        this.load.image('fatigue', 'assets/Cards/fatigue.png');
 
         // Monsters
         this.load.spritesheet('plent', 'assets/Enemies/Plent/Idle.png', { frameWidth: 128, frameHeight: 128 });
@@ -89,6 +90,10 @@ export class Preloader extends Scene {
         this.load.image('story-04', 'assets/Story/story-04.jpeg');
         this.load.audio('narration-intro', 'assets/Audio/Story/01-introduction-fr.mp3');
         this.load.audio('story-music', 'assets/Audio/BGM/story-music.mp3')
+
+        // Effects
+        this.load.spritesheet('effect', 'assets/Effects/Retro Impact Effect Pack 5 A.png', { frameWidth: 96, frameHeight: 96 });
+
     }
 
     create() {

@@ -1,13 +1,13 @@
 export const STARTING_DECK = [
-    'Viscous Strike', 'Viscous Strike',
-    'Acid Projection',
-    'Gelatinous Rush', 'Gelatinous Rush',
-    'Hardening',
-    'Wall',
-    'Mana Absorption',
-    'Controlled Division',
-    'Slowness',
-    'Fluid Cycle',
+    'Frappe Visqueuse', 'Frappe Visqueuse',
+    'Projection Acide',
+    'Ruée Gélatineuse', 'Ruée Gélatineuse',
+    'Durcissement',
+    'Armure molle',
+    'Absorption de Mana',
+    'Division Contrôlée',
+    'Limon Entravant',
+    'Cycle des fluides',
     'Assimilation',
-    'Viscous Transfusion'
+    'Transfusion Visqueuse'
 ];
