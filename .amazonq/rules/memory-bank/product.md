@@ -1,22 +1,21 @@
-# Product Overview
+# Slime Identity - Product Overview
 
 ## Project Purpose
-Slime Identity is a card-based roguelike game built with Phaser 3 and React. Players control a slime character navigating through a map-based adventure system, engaging in strategic card battles against various enemies.
+Slime Identity is a card-based RPG game built with Phaser 3 and React. Players control a slime character navigating through various environments, engaging in strategic card battles against diverse enemies while progressing through an adventure map.
 
 ## Key Features
-- **Card Battle System**: Strategic turn-based combat using a deck of slime-themed ability cards
-- **Map Progression**: Node-based map navigation with multiple encounter types
-- **Enemy Variety**: 15+ unique enemy types with distinct behaviors and AI patterns
-- **Deck Building**: Collection of 12+ unique cards with different effects (attacks, defense, mana manipulation)
-- **Story Mode**: Narrative-driven experience with voiced narration and visual storytelling
-- **Audio-Visual Polish**: Complete with background music, sound effects, and sprite animations
+- **Card-Based Combat System**: Strategic turn-based battles using a deck of cards with different effects (attack, defense, healing, buffs, debuffs)
+- **Adventure Map Navigation**: Explore interconnected locations with different biomes and challenges
+- **Enemy Variety**: Battle against 15+ different enemy types including werewolves, spirits, samurai, wizards, and mythical creatures
+- **Visual Effects System**: Rich particle effects and animations for combat and environmental interactions
+- **Story Integration**: Narrative elements with voice-over support in multiple languages (English/French)
+- **Card Collection & Rewards**: Earn new cards and upgrade existing ones through gameplay progression
+- **Multiple Game Scenes**: Seamless transitions between map exploration, combat, story sequences, and card management
 
 ## Target Users
-- Roguelike and deck-building game enthusiasts
-- Players who enjoy strategic card-based combat
-- Fans of indie games with unique themes and mechanics
+- **Casual Gamers**: Players who enjoy strategic card games with accessible mechanics
+- **RPG Enthusiasts**: Fans of role-playing games seeking character progression and exploration
+- **Strategy Game Players**: Users who appreciate tactical decision-making in combat scenarios
 
-## Use Cases
-- Single-player campaign progression through story and battles
-- Strategic deck management and card synergy exploration
-- Replayable roguelike experience with procedural encounters
+## Core Value Proposition
+Combines the strategic depth of card-based combat with the exploration and progression elements of traditional RPGs, wrapped in an engaging slime-themed adventure with high-quality visual and audio presentation.
