@@ -563,9 +563,8 @@ export class GameScene extends Scene {
             container.y = 140 + scrollY;
         });
 
-        const backBtn = this.add.rectangle(200, 1000, 150, 50, 0x7b3f9e).setDepth(1002).setInteractive({ useHandCursor: true });
-        backBtn.setStrokeStyle(3, 0xffffff);
-        const backText = this.add.text(200, 1000, 'Retour', { fontSize: '24px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5).setDepth(1003);
+        const backBtn = this.add.image(100, 1000, 'button-blue').setScale(0.5).setDepth(1002).setInteractive({ useHandCursor: true });
+        const backText = this.add.text(100, 998, 'Retour', { fontSize: '24px', color: '#ffffff', fontStyle: 'bold', stroke: '#000000', strokeThickness: 4 }).setOrigin(0.5).setDepth(1003);
 
         backBtn.on('pointerdown', () => {
             this.deckViewActive = false;
