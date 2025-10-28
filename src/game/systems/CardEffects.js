@@ -7,7 +7,7 @@ export class CardEffects {
         const { type, value, effects, targetType, areaType } = card.cardData;
         const isAOE = areaType === AREA_TYPES.AOE || targetType === TARGET_TYPES.ALL_ENEMIES;
 
-        if (scene.lastPlayedCard !== undefined && card.cardData.name !== 'Fatigue') {
+        if (scene.lastPlayedCard !== undefined && card.cardData.name !== 'Fatigue' && card.cardData.name !== 'Assimilation') {
             scene.lastPlayedCard = card.cardData;
         }
         if (scene.cardsPlayedThisTurn !== undefined) {
@@ -180,7 +180,7 @@ export class CardEffects {
                 if (scene.lastPlayedCard) {
                     const originalCard = CARD_DATABASE.find(c => c.name === scene.lastPlayedCard.name);
                     if (originalCard) {
-                        const copy = { ...originalCard, cost: originalCard.cost + effect.costIncrease };
+                        const copy = { ...originalCard, cost: originalCard.cost + effect.costIncrease, costModified: true };
                         const numCards = scene.hand.length;
                         const { x, y, rotation } = this.getCardPosition(numCards, numCards + 1, scene);
                         const depth = numCards + 1;
@@ -203,7 +203,11 @@ export class CardEffects {
                             ease: 'Back.easeOut'
                         });
                         scene.showCardEffect('Carte copiée', centerX, 150);
+                    } else {
+                        scene.showCardEffect('Aucune carte à copier', centerX, 150);
                     }
+                } else {
+                    scene.showCardEffect('Aucune carte à copier', centerX, 150);
                 }
                 break;
             case 'heal':

@@ -28,9 +28,10 @@ export class Card extends Phaser.GameObjects.Container {
 
         // const costBg = scene.add.circle(-125, -186, 24, 0xffffff);
         // this.add(costBg);
+        const costColor = cardData.costModified ? '#ffff00' : '#ffffff';
         const costText = scene.add.text(-110, -180, cardData.cost, {
             fontSize: '28px',
-            color: '#ffffff',
+            color: costColor,
             fontStyle: 'bold',
             stroke: '#000000',
             strokeThickness: 6
