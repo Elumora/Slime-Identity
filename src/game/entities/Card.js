@@ -139,39 +139,41 @@ export class Card extends Phaser.GameObjects.Container {
             this.discardHighlight.destroy();
         }
         
-        this.scene.discard.push(this.cardData);
-        this.scene.discardedCards++;
+        const scene = this.scene;
+        scene.discard.push(this.cardData);
+        scene.discardedCards++;
         
-        if (this.scene.player.blockOnDiscard) {
-            if (!this.scene.player.temporaryShield) this.scene.player.temporaryShield = 0;
-            this.scene.player.temporaryShield += this.scene.player.blockOnDiscard;
-            this.scene.player.updateHealthBar();
-            this.scene.showCardEffect(`+${this.scene.player.blockOnDiscard} Bloc`, this.scene.player.x, this.scene.player.y - 50);
+        if (scene.player.blockOnDiscard) {
+            if (!scene.player.temporaryShield) scene.player.temporaryShield = 0;
+            scene.player.temporaryShield += scene.player.blockOnDiscard;
+            scene.player.updateHealthBar();
+            scene.showCardEffect(`+${scene.player.blockOnDiscard} Bloc`, scene.player.x, scene.player.y - 50);
         }
         
-        this.scene.tweens.add({
+        const index = scene.hand.indexOf(this);
+        if (index > -1) {
+            scene.hand.splice(index, 1);
+        }
+        
+        scene.tweens.add({
             targets: this,
             alpha: 0,
             scale: 0,
             y: this.y + 200,
             duration: 300,
             onComplete: () => {
-                const index = this.scene.hand.indexOf(this);
-                if (index > -1) {
-                    this.scene.hand.splice(index, 1);
-                }
                 this.destroy();
                 
-                if (this.scene.discardedCards >= this.scene.discardCount) {
-                    this.scene.discardMode = false;
-                    this.scene.player.blockOnDiscard = 0;
-                    this.scene.hand.forEach(card => {
+                if (scene.discardedCards >= scene.discardCount) {
+                    scene.discardMode = false;
+                    scene.player.blockOnDiscard = 0;
+                    scene.hand.forEach(card => {
                         if (card.discardHighlight) {
                             card.discardHighlight.destroy();
                             card.discardHighlight = null;
                         }
                     });
-                    this.scene.reorganizeHand();
+                    scene.reorganizeHand();
                 }
             }
         });

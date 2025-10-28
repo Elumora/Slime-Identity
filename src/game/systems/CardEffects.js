@@ -32,6 +32,12 @@ export class CardEffects {
             damage += scene.player.buffs.attack.value;
         }
 
+        let multiplier = 1;
+        if (scene.player.nextAttackDuplicated) {
+            multiplier = 2;
+            scene.player.nextAttackDuplicated = false;
+        }
+
         if (isAOE) {
             const centerX = scene.cameras.main.centerX;
             const centerY = scene.cameras.main.centerY;
@@ -45,9 +51,9 @@ export class CardEffects {
                 onComplete: () => {
                     scene.enemies.filter(e => e.active).forEach(enemy => {
                         scene.playAttackEffect(enemy.x, enemy.y);
-                        let finalDamage = damage;
+                        let finalDamage = damage * multiplier;
                         if (enemy.debuffs.fragile) {
-                            finalDamage = Math.floor(damage * 1.25);
+                            finalDamage = Math.floor(finalDamage * 1.25);
                         }
                         enemy.takeDamage(finalDamage);
                         scene.showCardEffect(`-${finalDamage}`, enemy.x, enemy.y - 50);
@@ -64,9 +70,9 @@ export class CardEffects {
                 ease: 'Power2',
                 onComplete: () => {
                     scene.playAttackEffect(target.x, target.y);
-                    let finalDamage = damage;
+                    let finalDamage = damage * multiplier;
                     if (target.debuffs && target.debuffs.fragile) {
-                        finalDamage = Math.floor(damage * 1.25);
+                        finalDamage = Math.floor(finalDamage * 1.25);
                     }
                     target.takeDamage(finalDamage);
                     scene.showCardEffect(`-${finalDamage}`, target.x, target.y - 50);
