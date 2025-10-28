@@ -1,11 +1,12 @@
 import Phaser from 'phaser';
 import { DevGrid } from './debug/DevGrid';
 import { Boot } from './scenes/Boot';
+import { CardDebugScene } from './scenes/CardDebugScene';
+import { CardRewardScene } from './scenes/CardRewardScene';
 import { Game } from './scenes/Game';
 import { GameScene } from './scenes/GameScene';
 import { MainMenu } from './scenes/MainMenu';
 import { MapScene } from './scenes/MapScene';
-import { CardDebugScene } from './scenes/CardDebugScene';
 import { Narration } from './scenes/Narration';
 import { Preloader } from './scenes/Preloader';
 
@@ -28,6 +29,7 @@ const config = {
         Narration,
         Game,
         GameScene,
+        CardRewardScene,
         DevGrid
     ]
 };

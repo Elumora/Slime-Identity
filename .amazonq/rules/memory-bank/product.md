@@ -1,21 +1,22 @@
 # Product Overview
 
 ## Project Purpose
-Slime Identity is an interactive narrative game built with Phaser 3 and React where players embark on a journey of self-discovery through the perspective of a slime character. The game explores identity and personal discovery through engaging gameplay mechanics and storytelling.
+Slime Identity is a card-based roguelike game built with Phaser 3 and React. Players control a slime character navigating through a map-based adventure system, engaging in strategic card battles against various enemies.
 
 ## Key Features
-- **Interactive Story-Driven Gameplay**: Players navigate through a quest to discover their identity with meaningful choices
-- **Animated Menu System**: Smooth character animations with jumping slime mechanics and floating logo effects
-- **Audio Integration**: Background music and sound effects for immersive experience
-- **Modal Dialog System**: Quest prompts and interactive decision-making interfaces
-- **Development Tools**: Built-in debug grid for development assistance
+- **Card Battle System**: Strategic turn-based combat using a deck of slime-themed ability cards
+- **Map Progression**: Node-based map navigation with multiple encounter types
+- **Enemy Variety**: 15+ unique enemy types with distinct behaviors and AI patterns
+- **Deck Building**: Collection of 12+ unique cards with different effects (attacks, defense, mana manipulation)
+- **Story Mode**: Narrative-driven experience with voiced narration and visual storytelling
+- **Audio-Visual Polish**: Complete with background music, sound effects, and sprite animations
 
 ## Target Users
-- Players interested in narrative-driven games
-- Casual gamers looking for story-based experiences
-- Developers learning Phaser 3 and React integration patterns
+- Roguelike and deck-building game enthusiasts
+- Players who enjoy strategic card-based combat
+- Fans of indie games with unique themes and mechanics
 
 ## Use Cases
-- Single-player story progression through identity discovery narrative
-- Educational reference for Phaser 3 game development with React
-- Template for building narrative-driven browser games
+- Single-player campaign progression through story and battles
+- Strategic deck management and card synergy exploration
+- Replayable roguelike experience with procedural encounters
