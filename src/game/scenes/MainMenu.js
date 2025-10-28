@@ -300,6 +300,11 @@ export class MainMenu extends Scene {
                 buttonParticles.stop();
             });
 
+        this.input.keyboard.on('keydown-C', () => {
+            this.sound.stopAll();
+            this.scene.start('CardDebugScene');
+        });
+
         EventBus.emit('current-scene-ready', this);
     }
 

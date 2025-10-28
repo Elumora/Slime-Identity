@@ -17,7 +17,7 @@ export class Card extends Phaser.GameObjects.Container {
 
         this.cardSprite = scene.add.image(0, 0, 'card-template');
         this.cardSprite.setScale(0.50);
-        
+
         if (cardData.icon) {
             const icon = scene.add.image(0, -40, cardData.icon);
             icon.setScale(0.25);
@@ -27,7 +27,7 @@ export class Card extends Phaser.GameObjects.Container {
 
         // const costBg = scene.add.circle(-125, -186, 24, 0xffffff);
         // this.add(costBg);
-        const costText = scene.add.text(-125, -186, cardData.cost, {
+        const costText = scene.add.text(-110, -180, cardData.cost, {
             fontSize: '28px',
             color: '#ffffff',
             fontStyle: 'bold',
@@ -37,8 +37,8 @@ export class Card extends Phaser.GameObjects.Container {
         this.add(costText);
 
         const nameLength = cardData.name.length;
-        const fontSize = nameLength <= 10 ? 28 : nameLength <= 15 ? 20 : nameLength <= 20 ? 18 : 16;
-        this.nameText = scene.add.text(0, -184, cardData.name, {
+        const fontSize = nameLength <= 10 ? 28 : nameLength <= 15 ? 16 : nameLength <= 20 ? 14 : 12;
+        this.nameText = scene.add.text(15, -178, cardData.name, {
             fontSize: `${fontSize}px`,
             color: '#cfc8b0',
             stroke: 'rgba(56, 43, 43, 1)',
