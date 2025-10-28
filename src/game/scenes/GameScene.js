@@ -32,6 +32,12 @@ export class GameScene extends Scene {
         this.skipNextEnemyTurn = false;
         this.playFirst = false;
         this.maxHandSize = 5;
+        this.lastPlayedCard = null;
+        this.cardsPlayedThisTurn = 0;
+        this.discardMode = false;
+        this.discardCount = 0;
+        this.discardedCards = 0;
+        this.currentGameDamageDealt = 0;
 
         const endTurnBtn = this.add.rectangle(1750, 100, 180, 60, 0x7b3f9e);
         endTurnBtn.setStrokeStyle(3, 0xff_ff_ff);
@@ -439,6 +445,19 @@ export class GameScene extends Scene {
     }
 
     endTurn() {
+        this.cardsPlayedThisTurn = 0;
+        
+        if (this.player.temporaryShield) {
+            this.player.temporaryShield = 0;
+            this.player.updateHealthBar();
+        }
+        
+        if (this.player.blockIncrement && this.player.blockIncrement.value > 0) {
+            this.player.shield += this.player.blockIncrement.value;
+            this.showCardEffect(`+${this.player.blockIncrement.value} Bloc`, this.player.x, this.player.y - 50);
+            this.player.updateHealthBar();
+        }
+        
         const cardsToRefill = this.maxHandSize - this.hand.length;
 
         this.time.delayedCall(200, () => {
@@ -457,14 +476,15 @@ export class GameScene extends Scene {
                             const startX = enemy.x;
                             let damage = enemy.attackDamage;
 
-                            if (enemy.debuffs.attack) {
-                                damage = Math.max(0, damage - enemy.debuffs.attack.value);
+                            if (enemy.debuffs.slow) {
+                                damage = Math.floor(damage * (1 - enemy.debuffs.slow.value));
                             }
 
                             if (enemy.debuffs.skip && enemy.debuffs.skip.duration > 0) {
                                 this.showCardEffect('Skipped', enemy.x, enemy.y - 50);
                                 enemy.debuffs.skip.duration--;
                                 if (enemy.debuffs.skip.duration <= 0) delete enemy.debuffs.skip;
+                                enemy.updateHealthBar();
                                 return;
                             }
 
@@ -489,7 +509,10 @@ export class GameScene extends Scene {
                                     Object.keys(enemy.debuffs).forEach(key => {
                                         if (enemy.debuffs[key].duration) {
                                             enemy.debuffs[key].duration--;
-                                            if (enemy.debuffs[key].duration <= 0) delete enemy.debuffs[key];
+                                            if (enemy.debuffs[key].duration <= 0) {
+                                                delete enemy.debuffs[key];
+                                                enemy.updateHealthBar();
+                                            }
                                         }
                                     });
                                 }

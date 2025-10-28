@@ -1,9 +1,18 @@
 import { CARD_TYPES, TARGET_TYPES, AREA_TYPES } from '../config/CardTypes';
+import { CARD_DATABASE } from '../config/CardDatabase';
+import { Card } from '../entities/Card';
 
 export class CardEffects {
     static execute(card, scene, target = null) {
         const { type, value, effects, targetType, areaType } = card.cardData;
         const isAOE = areaType === AREA_TYPES.AOE || targetType === TARGET_TYPES.ALL_ENEMIES;
+
+        if (scene.lastPlayedCard !== undefined && card.cardData.name !== 'Fatigue') {
+            scene.lastPlayedCard = card.cardData;
+        }
+        if (scene.cardsPlayedThisTurn !== undefined) {
+            scene.cardsPlayedThisTurn++;
+        }
 
         if (value && (type === CARD_TYPES.ATTACK || type === CARD_TYPES.SUSTAIN)) {
             this.executeDamage(card, scene, target, value, isAOE);
@@ -36,8 +45,12 @@ export class CardEffects {
                 onComplete: () => {
                     scene.enemies.filter(e => e.active).forEach(enemy => {
                         scene.playAttackEffect(enemy.x, enemy.y);
-                        enemy.takeDamage(damage);
-                        scene.showCardEffect(`-${damage}`, enemy.x, enemy.y - 50);
+                        let finalDamage = damage;
+                        if (enemy.debuffs.fragile) {
+                            finalDamage = Math.floor(damage * 1.25);
+                        }
+                        enemy.takeDamage(finalDamage);
+                        scene.showCardEffect(`-${finalDamage}`, enemy.x, enemy.y - 50);
                     });
                 }
             });
@@ -51,8 +64,12 @@ export class CardEffects {
                 ease: 'Power2',
                 onComplete: () => {
                     scene.playAttackEffect(target.x, target.y);
-                    target.takeDamage(damage);
-                    scene.showCardEffect(`-${damage}`, target.x, target.y - 50);
+                    let finalDamage = damage;
+                    if (target.debuffs && target.debuffs.fragile) {
+                        finalDamage = Math.floor(damage * 1.25);
+                    }
+                    target.takeDamage(finalDamage);
+                    scene.showCardEffect(`-${finalDamage}`, target.x, target.y - 50);
                 }
             });
         }
@@ -66,17 +83,21 @@ export class CardEffects {
                 if (target && target.addDebuff) {
                     target.addDebuff('fragile', effect.stacks || 1, effect.duration || 1);
                     scene.showCardEffect('Fragile', target.x, target.y - 50);
+                    target.updateHealthBar();
                 }
                 break;
             case 'blockTemporary':
                 scene.playPlayerEffect(scene.player);
-                scene.player.addShield(effect.value);
+                if (!scene.player.temporaryShield) scene.player.temporaryShield = 0;
+                scene.player.temporaryShield += effect.value;
+                scene.player.updateHealthBar();
                 scene.showCardEffect(`+${effect.value} Bloc`, scene.player.x, scene.player.y - 50);
                 break;
             case 'blockPersistent':
                 scene.playPlayerEffect(scene.player);
                 if (!scene.player.persistentBlock) scene.player.persistentBlock = 0;
                 scene.player.persistentBlock += effect.value;
+                scene.player.updateHealthBar();
                 scene.showCardEffect(`+${effect.value} Bloc Persistant`, scene.player.x, scene.player.y - 50);
                 break;
             case 'blockIncrement':
@@ -88,8 +109,31 @@ export class CardEffects {
                 }
                 break;
             case 'fatigue':
-                for (let i = 0; i < effect.value; i++) {
-                    scene.addCardToHand({ name: 'Fatigue', type: CARD_TYPES.STATUS, cost: 0, effects: [{ type: 'unplayable' }] });
+                const fatigueCard = CARD_DATABASE.find(c => c.name === 'Fatigue');
+                if (fatigueCard) {
+                    for (let i = 0; i < effect.value; i++) {
+                        const numCards = scene.hand.length;
+                        const { x, y, rotation } = this.getCardPosition(numCards, numCards + 1, scene);
+                        const depth = numCards + 1;
+                        const newCard = new Card(scene, 960, 350, fatigueCard);
+                        newCard.setAlpha(0);
+                        newCard.setScale(0.25);
+                        newCard.setDepth(depth);
+                        newCard.homeRotation = rotation;
+                        newCard.homeDepth = depth;
+                        newCard.setHomePosition(x, y, rotation, depth);
+                        scene.hand.push(newCard);
+                        scene.tweens.add({
+                            targets: newCard,
+                            x: x,
+                            y: y,
+                            rotation: rotation,
+                            scale: 1,
+                            alpha: 1,
+                            duration: 300,
+                            ease: 'Back.easeOut'
+                        });
+                    }
                 }
                 scene.showCardEffect('Fatigue ajoutée', centerX, 150);
                 break;
@@ -110,8 +154,9 @@ export class CardEffects {
                 break;
             case 'slow':
                 if (target && target.addDebuff) {
-                    target.addDebuff('slow', effect.stacks || 1, 1);
-                    scene.showCardEffect('Ralenti', target.x, target.y - 50);
+                    target.addDebuff('slow', 0.25, 1);
+                    scene.showCardEffect('Ralenti -25%', target.x, target.y - 50);
+                    target.updateHealthBar();
                 }
                 break;
             case 'draw':
@@ -119,17 +164,39 @@ export class CardEffects {
                 scene.showCardEffect(`Pioche ${effect.value}`, centerX, 150);
                 break;
             case 'discard':
-                scene.discardCards(effect.value);
-                scene.showCardEffect(`Défausse ${effect.value}`, centerX, 150);
+                this.discardInteractive(scene, effect.value);
                 break;
             case 'blockOnDiscard':
                 scene.player.blockOnDiscard = effect.value;
                 break;
             case 'copyLastPlayed':
-                if (scene.lastPlayedCard) {
-                    const copy = { ...scene.lastPlayedCard, cost: scene.lastPlayedCard.cost + effect.costIncrease, ephemeral: effect.ephemeral };
-                    scene.addCardToHand(copy);
-                    scene.showCardEffect('Carte copiée', centerX, 150);
+                if (scene.lastPlayedCard && scene.lastPlayedCard.name !== card.cardData.name) {
+                    const originalCard = CARD_DATABASE.find(c => c.name === scene.lastPlayedCard.name);
+                    if (originalCard) {
+                        const copy = { ...originalCard, cost: originalCard.cost + effect.costIncrease };
+                        const numCards = scene.hand.length;
+                        const { x, y, rotation } = this.getCardPosition(numCards, numCards + 1, scene);
+                        const depth = numCards + 1;
+                        const newCard = new Card(scene, 960, 350, copy);
+                        newCard.setAlpha(0);
+                        newCard.setScale(0.25);
+                        newCard.setDepth(depth);
+                        newCard.homeRotation = rotation;
+                        newCard.homeDepth = depth;
+                        newCard.setHomePosition(x, y, rotation, depth);
+                        scene.hand.push(newCard);
+                        scene.tweens.add({
+                            targets: newCard,
+                            x: x,
+                            y: y,
+                            rotation: rotation,
+                            scale: 1,
+                            alpha: 1,
+                            duration: 300,
+                            ease: 'Back.easeOut'
+                        });
+                        scene.showCardEffect('Carte copiée', centerX, 150);
+                    }
                 }
                 break;
             case 'heal':
@@ -138,7 +205,7 @@ export class CardEffects {
                 scene.showCardEffect(`+${effect.value} PV`, scene.player.x, scene.player.y - 50);
                 break;
             case 'drawIfFirst':
-                if (scene.cardsPlayedThisTurn === 0) {
+                if (scene.cardsPlayedThisTurn === 1) {
                     scene.drawCards(effect.value);
                     scene.showCardEffect(`Pioche ${effect.value}`, centerX, 150);
                 }
@@ -146,5 +213,41 @@ export class CardEffects {
             case 'unplayable':
                 break;
         }
+    }
+
+    static discardInteractive(scene, count) {
+        if (scene.hand.length === 0) return;
+        
+        scene.discardMode = true;
+        scene.discardCount = count;
+        scene.discardedCards = 0;
+        
+        scene.showCardEffect(`Cliquez ${count} carte(s) à défausser`, scene.cameras.main.centerX, 150);
+        
+        scene.hand.forEach(card => {
+            card.discardHighlight = scene.add.rectangle(0, 0, card.width, card.height, 0xffff00, 0.3);
+            card.add(card.discardHighlight);
+            card.discardHighlight.setVisible(true);
+        });
+    }
+
+    static getCardPosition(i, numCards, scene) {
+        const splinePoints = [
+            { x: 560, y: 1080 },
+            { x: 940, y: 1000 },
+            { x: 1500, y: 1080 }
+        ];
+
+        if (numCards === 1) {
+            return { x: splinePoints[1].x, y: splinePoints[1].y, rotation: 0 };
+        }
+
+        const t = i / (numCards - 1);
+        const curve = new Phaser.Curves.Spline(splinePoints);
+        const point = curve.getPoint(t);
+        const tangent = curve.getTangent(t);
+        const rotation = Math.atan2(tangent.y, tangent.x);
+
+        return { x: point.x, y: point.y, rotation };
     }
 }

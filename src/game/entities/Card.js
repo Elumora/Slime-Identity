@@ -107,6 +107,11 @@ export class Card extends Phaser.GameObjects.Container {
     }
 
     onClick() {
+        if (this.scene.discardMode) {
+            this.handleDiscard();
+            return;
+        }
+        
         if (this.isCentered) {
             this.uncenter();
             if (this.scene.sound) this.scene.sound.play(`card_draw${Math.floor(Math.random() * 5) + 1}`);
@@ -127,6 +132,49 @@ export class Card extends Phaser.GameObjects.Container {
             });
             this.setDepth(300);
         }
+    }
+
+    handleDiscard() {
+        if (this.discardHighlight) {
+            this.discardHighlight.destroy();
+        }
+        
+        this.scene.discard.push(this.cardData);
+        this.scene.discardedCards++;
+        
+        if (this.scene.player.blockOnDiscard) {
+            if (!this.scene.player.temporaryShield) this.scene.player.temporaryShield = 0;
+            this.scene.player.temporaryShield += this.scene.player.blockOnDiscard;
+            this.scene.player.updateHealthBar();
+            this.scene.showCardEffect(`+${this.scene.player.blockOnDiscard} Bloc`, this.scene.player.x, this.scene.player.y - 50);
+        }
+        
+        this.scene.tweens.add({
+            targets: this,
+            alpha: 0,
+            scale: 0,
+            y: this.y + 200,
+            duration: 300,
+            onComplete: () => {
+                const index = this.scene.hand.indexOf(this);
+                if (index > -1) {
+                    this.scene.hand.splice(index, 1);
+                }
+                this.destroy();
+                
+                if (this.scene.discardedCards >= this.scene.discardCount) {
+                    this.scene.discardMode = false;
+                    this.scene.player.blockOnDiscard = 0;
+                    this.scene.hand.forEach(card => {
+                        if (card.discardHighlight) {
+                            card.discardHighlight.destroy();
+                            card.discardHighlight = null;
+                        }
+                    });
+                    this.scene.reorganizeHand();
+                }
+            }
+        });
     }
 
     uncenter() {
@@ -262,13 +310,6 @@ export class Card extends Phaser.GameObjects.Container {
             this.scene.sound.play(this.cardData.sound);
         } else if (this.scene.sound) {
             this.scene.sound.play('card_play');
-        }
-        
-        if (this.scene.lastPlayedCard !== undefined) {
-            this.scene.lastPlayedCard = this.cardData;
-        }
-        if (this.scene.cardsPlayedThisTurn !== undefined) {
-            this.scene.cardsPlayedThisTurn++;
         }
         
         CardEffects.execute(this, this.scene, target);

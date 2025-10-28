@@ -7,8 +7,11 @@ export class Enemy extends Phaser.GameObjects.Container {
         this.maxHealth = 30;
         this.health = this.maxHealth;
         this.shield = 0;
+        this.temporaryShield = 0;
         this.buffs = {};
         this.debuffs = {};
+        this.blockIncrement = null;
+        this.blockOnDiscard = 0;
 
         const hasAnimation = scene.anims.exists(`${enemyType}-idle`);
 
@@ -73,12 +76,26 @@ export class Enemy extends Phaser.GameObjects.Container {
             actualDamage = Math.max(0, actualDamage - this.buffs.defense.value);
         }
 
-        if (this.shield > 0) {
-            if (this.shield >= actualDamage) {
-                this.shield -= actualDamage;
+        let totalShield = this.shield + (this.temporaryShield || 0);
+        if (totalShield > 0) {
+            if (totalShield >= actualDamage) {
+                let remaining = actualDamage;
+                if (this.temporaryShield > 0) {
+                    if (this.temporaryShield >= remaining) {
+                        this.temporaryShield -= remaining;
+                        remaining = 0;
+                    } else {
+                        remaining -= this.temporaryShield;
+                        this.temporaryShield = 0;
+                    }
+                }
+                if (remaining > 0 && this.shield > 0) {
+                    this.shield -= remaining;
+                }
                 actualDamage = 0;
             } else {
-                actualDamage -= this.shield;
+                actualDamage -= totalShield;
+                this.temporaryShield = 0;
                 this.shield = 0;
             }
         }
@@ -119,8 +136,21 @@ export class Enemy extends Phaser.GameObjects.Container {
     updateHealthBar() {
         if (!this.healthText || !this.scene) return;
 
-        const shieldText = this.shield > 0 ? ` [${this.shield}]` : '';
-        this.healthText.setText(`HP: ${this.health}${shieldText}`);
+        let statusText = '';
+        const totalShield = this.shield + (this.temporaryShield || 0);
+        if (totalShield > 0) {
+            statusText += ` [${totalShield}]`;
+        }
+        if (this.debuffs.fragile) {
+            statusText += ' F';
+        }
+        if (this.debuffs.slow) {
+            statusText += ' S';
+        }
+        if (this.blockIncrement && this.blockIncrement.value > 0) {
+            statusText += ` +${this.blockIncrement.value}B`;
+        }
+        this.healthText.setText(`HP: ${this.health}${statusText}`);
 
         if (!this.isPlayer && this.attackDamage > 0 && this.scene.add) {
             if (!this.attackText) {
@@ -141,6 +171,12 @@ export class Enemy extends Phaser.GameObjects.Container {
 
     addShield(amount) {
         this.shield += amount;
+        this.updateHealthBar();
+    }
+
+    addTemporaryShield(amount) {
+        if (!this.temporaryShield) this.temporaryShield = 0;
+        this.temporaryShield += amount;
         this.updateHealthBar();
     }
 
