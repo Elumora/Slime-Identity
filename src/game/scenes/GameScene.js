@@ -58,13 +58,6 @@ export class GameScene extends Scene {
             hideOnComplete: true
         });
 
-        this.anims.create({
-            key: 'plent-idle',
-            frames: this.anims.generateFrameNumbers('plent', { start: 0, end: 4 }),
-            frameRate: 8,
-            repeat: -1
-        });
-
         this.createEnemies();
         this.time.delayedCall(1500, () => this.dealCards());
 
