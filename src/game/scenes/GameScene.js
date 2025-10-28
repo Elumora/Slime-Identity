@@ -40,11 +40,11 @@ export class GameScene extends Scene {
         this.currentGameDamageDealt = 0;
         this.nextAttackDuplicated = false;
 
-        const endTurnBtn = this.add.rectangle(1750, 100, 180, 60, 0x7b3f9e);
-        endTurnBtn.setStrokeStyle(3, 0xff_ff_ff);
-        endTurnBtn.setInteractive({ useHandCursor: true });
-        endTurnBtn.on('pointerdown', () => this.endTurn());
-        this.add.text(1750, 100, 'End Turn', {
+        this.endTurnBtn = this.add.rectangle(1750, 100, 180, 60, 0x7b3f9e);
+        this.endTurnBtn.setStrokeStyle(3, 0xff_ff_ff);
+        this.endTurnBtn.setInteractive({ useHandCursor: true });
+        this.endTurnBtn.on('pointerdown', () => this.endTurn());
+        this.endTurnText = this.add.text(1750, 100, 'End Turn', {
             fontSize: '24px',
             color: '#ffffff',
             fontStyle: 'bold'
@@ -446,6 +446,9 @@ export class GameScene extends Scene {
     }
 
     endTurn() {
+        this.endTurnBtn.disableInteractive();
+        this.endTurnBtn.setFillStyle(0x555555);
+        this.endTurnText.setAlpha(0.5);
         this.cardsPlayedThisTurn = 0;
         
         const cardsToRefill = this.maxHandSize - this.hand.length;
@@ -518,6 +521,10 @@ export class GameScene extends Scene {
                                                 this.showCardEffect(`+${this.player.blockIncrement.value} Bloc`, this.player.x, this.player.y - 50);
                                                 this.player.updateHealthBar();
                                             }
+                                            
+                                            this.endTurnBtn.setInteractive({ useHandCursor: true });
+                                            this.endTurnBtn.setFillStyle(0x7b3f9e);
+                                            this.endTurnText.setAlpha(1);
                                         });
                                     }
                                 }
@@ -537,6 +544,10 @@ export class GameScene extends Scene {
                         this.showCardEffect(`+${this.player.blockIncrement.value} Bloc`, this.player.x, this.player.y - 50);
                         this.player.updateHealthBar();
                     }
+                    
+                    this.endTurnBtn.setInteractive({ useHandCursor: true });
+                    this.endTurnBtn.setFillStyle(0x7b3f9e);
+                    this.endTurnText.setAlpha(1);
                 }
             });
         });
