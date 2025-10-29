@@ -1,3 +1,5 @@
+import { MapConfig } from '../config/MapConfig';
+
 export const mapData = {
     gridWidth: 6,
     gridHeight: 50,
@@ -201,7 +203,7 @@ function generateMapElements(path) {
     ];
     
     const pathLength = path.length;
-    const totalElements = 15;
+    const totalElements = MapConfig.totalElements;
     const monsters = [];
     const coins = [];
     const chests = [];
@@ -217,8 +219,8 @@ function generateMapElements(path) {
         enemies: [{ sprite: bossEnemyType, health: 100, attack: 20 }]
     });
     
-    // Miniboss 2 à 4 positions avant le boss
-    const minibossOffset = Math.floor(Math.random() * 3) + 2;
+    // Miniboss entre 3 et 5 positions avant la fin
+    const minibossOffset = Math.floor(Math.random() * (MapConfig.miniboss.maxOffsetFromEnd - MapConfig.miniboss.minOffsetFromEnd + 1)) + MapConfig.miniboss.minOffsetFromEnd;
     const minibossPos = path[pathLength - 1 - minibossOffset];
     const minibossEnemyType = enemies[Math.floor(Math.random() * enemies.length)];
     monsters.push({
@@ -231,7 +233,7 @@ function generateMapElements(path) {
     // Positions disponibles (exclure début, boss et miniboss)
     const usedIndices = [0, pathLength - 1, pathLength - 1 - minibossOffset];
     const availableIndices = [];
-    for (let i = 3; i < pathLength - 5; i++) {
+    for (let i = 3; i < pathLength - 6; i++) {
         if (!usedIndices.includes(i)) availableIndices.push(i);
     }
     
@@ -241,54 +243,79 @@ function generateMapElements(path) {
         [availableIndices[i], availableIndices[j]] = [availableIndices[j], availableIndices[i]];
     }
     
-    // Répartition: 80% ennemis, 10% coins, 5% coffres, 5% shops
+    // Répartition selon configuration
     const remainingElements = totalElements - 2;
-    const numMonsters = Math.round(remainingElements * 0.8);
-    const numCoins = Math.round(remainingElements * 0.1);
-    const numChests = Math.floor(remainingElements * 0.05);
+    const numMonsters = Math.round(remainingElements * MapConfig.distribution.monsters / 100);
+    const numCoins = Math.round(remainingElements * MapConfig.distribution.coins / 100);
+    const numChests = Math.floor(remainingElements * MapConfig.distribution.chests / 100);
     const numShops = remainingElements - numMonsters - numCoins - numChests;
     
+    // Créer un tableau d'éléments avec leurs types
+    const elements = [];
+    for (let i = 0; i < numMonsters; i++) elements.push('monster');
+    for (let i = 0; i < numCoins; i++) elements.push('coin');
+    for (let i = 0; i < numChests; i++) elements.push('chest');
+    for (let i = 0; i < numShops; i++) elements.push('shop');
+    
+    // Mélanger les éléments
+    for (let i = elements.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [elements[i], elements[j]] = [elements[j], elements[i]];
+    }
+    
+    // Placer les éléments en évitant deux shops consécutifs
     let idx = 0;
+    let lastWasShop = false;
     
-    // Ennemis
-    for (let i = 0; i < numMonsters && idx < availableIndices.length; i++, idx++) {
+    for (let i = 0; i < elements.length && idx < availableIndices.length; i++) {
+        const elementType = elements[i];
+        
+        // Si c'est un shop et que le dernier était un shop, on cherche un autre élément
+        if (elementType === 'shop' && lastWasShop) {
+            // Trouver le prochain élément qui n'est pas un shop
+            let swapIdx = i + 1;
+            while (swapIdx < elements.length && elements[swapIdx] === 'shop') {
+                swapIdx++;
+            }
+            if (swapIdx < elements.length) {
+                [elements[i], elements[swapIdx]] = [elements[swapIdx], elements[i]];
+            }
+        }
+        
         const pos = path[availableIndices[idx]];
-        const enemyType = enemies[Math.floor(Math.random() * enemies.length)];
         const progress = availableIndices[idx] / pathLength;
-        monsters.push({
-            x: pos.x,
-            y: pos.y,
-            texture: 'monster',
-            enemies: [{
-                sprite: enemyType,
-                health: 15 + Math.floor(progress * 30),
-                attack: 5 + Math.floor(progress * 8)
-            }]
-        });
-    }
-    
-    // Coins
-    for (let i = 0; i < numCoins && idx < availableIndices.length; i++, idx++) {
-        const pos = path[availableIndices[idx]];
-        coins.push({ x: pos.x, y: pos.y });
-    }
-    
-    // Coffres
-    for (let i = 0; i < numChests && idx < availableIndices.length; i++, idx++) {
-        const pos = path[availableIndices[idx]];
-        chests.push({ x: pos.x, y: pos.y });
-    }
-    
-    // Shops
-    for (let i = 0; i < numShops && idx < availableIndices.length; i++, idx++) {
-        const pos = path[availableIndices[idx]];
-        shops.push({ x: pos.x, y: pos.y });
+        
+        if (elements[i] === 'monster') {
+            const enemyType = enemies[Math.floor(Math.random() * enemies.length)];
+            monsters.push({
+                x: pos.x,
+                y: pos.y,
+                texture: 'monster',
+                enemies: [{
+                    sprite: enemyType,
+                    health: 15 + Math.floor(progress * 30),
+                    attack: 5 + Math.floor(progress * 8)
+                }]
+            });
+            lastWasShop = false;
+        } else if (elements[i] === 'coin') {
+            coins.push({ x: pos.x, y: pos.y });
+            lastWasShop = false;
+        } else if (elements[i] === 'chest') {
+            chests.push({ x: pos.x, y: pos.y });
+            lastWasShop = false;
+        } else if (elements[i] === 'shop') {
+            shops.push({ x: pos.x, y: pos.y });
+            lastWasShop = true;
+        }
+        
+        idx++;
     }
     
     return { monsters, coins, chests, shops };
 }
 
-const MAP_VERSION = 2;
+const MAP_VERSION = 3;
 
 export function generateMap() {
     const { monsters, coins, chests, shops } = generateMapElements(mapData.path);
