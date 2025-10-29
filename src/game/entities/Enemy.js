@@ -38,12 +38,21 @@ export class Enemy extends Phaser.GameObjects.Container {
         const spriteHeight = this.sprite.displayHeight;
         const healthYOffset = spriteHeight / 2 + 20;
 
-        this.healthText = scene.add.text(0, healthYOffset, `HP: ${this.health}`, {
-            fontSize: '20px',
+        const barWidth = 250;
+        const barHeight = 24;
+
+        this.healthBarBg = scene.add.rectangle(0, healthYOffset, barWidth, barHeight, 0x000000).setStrokeStyle(2, 0xffffff);
+        this.add(this.healthBarBg);
+
+        this.healthBarFill = scene.add.rectangle(-barWidth / 2, healthYOffset, barWidth, barHeight - 2, 0x00ff00).setOrigin(0, 0.5);
+        this.add(this.healthBarFill);
+
+        this.healthText = scene.add.text(0, healthYOffset, `${this.health}/${this.maxHealth}`, {
+            fontSize: '14px',
             color: '#ffffff',
             fontStyle: 'bold',
             stroke: '#000000',
-            strokeThickness: 3
+            strokeThickness: 2
         }).setOrigin(0.5);
         this.add(this.healthText);
 
@@ -150,7 +159,23 @@ export class Enemy extends Phaser.GameObjects.Container {
         if (this.blockIncrement && this.blockIncrement.value > 0) {
             statusText += ` +${this.blockIncrement.value}B`;
         }
-        this.healthText.setText(`HP: ${this.health}${statusText}`);
+        this.healthText.setText(`${this.health}/${this.maxHealth}${statusText}`);
+
+        const healthPercent = this.health / this.maxHealth;
+        const barWidth = 250;
+        const targetWidth = (barWidth - 1) * healthPercent;
+
+        if (this.healthBarFill) {
+            this.scene.tweens.add({
+                targets: this.healthBarFill,
+                width: targetWidth,
+                duration: 300,
+                ease: 'Power2'
+            });
+
+            const color = healthPercent > 0.5 ? 0x00ff00 : healthPercent > 0.25 ? 0xffff00 : 0xff0000;
+            this.healthBarFill.setFillStyle(color);
+        }
 
         this.statusIcons.forEach(icon => icon.destroy());
         this.statusIcons = [];
