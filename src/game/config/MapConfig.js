@@ -11,7 +11,6 @@ export const MapConfig = {
     
     // Configuration du miniboss
     miniboss: {
-        minOffsetFromEnd: 3,  // Minimum 3 positions avant la fin
-        maxOffsetFromEnd: 5   // Maximum 5 positions avant la fin
+        count: 1  // Nombre de miniboss sur la map
     }
 };

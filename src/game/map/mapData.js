@@ -219,21 +219,31 @@ function generateMapElements(path) {
         enemies: [{ sprite: bossEnemyType, health: 100, attack: 20 }]
     });
     
-    // Miniboss entre 3 et 5 positions avant la fin
-    const minibossOffset = Math.floor(Math.random() * (MapConfig.miniboss.maxOffsetFromEnd - MapConfig.miniboss.minOffsetFromEnd + 1)) + MapConfig.miniboss.minOffsetFromEnd;
-    const minibossPos = path[pathLength - 1 - minibossOffset];
-    const minibossEnemyType = enemies[Math.floor(Math.random() * enemies.length)];
-    monsters.push({
-        x: minibossPos.x,
-        y: minibossPos.y,
-        texture: 'miniboss',
-        enemies: [{ sprite: minibossEnemyType, health: 60, attack: 15 }]
-    });
+    // Miniboss au milieu de la map
+    const usedIndices = [0, pathLength - 1];
+    const middleStart = Math.floor(pathLength * 0.4);
+    const middleEnd = Math.floor(pathLength * 0.6);
+    
+    for (let i = 0; i < MapConfig.miniboss.count; i++) {
+        let minibossIndex;
+        do {
+            minibossIndex = Math.floor(Math.random() * (middleEnd - middleStart)) + middleStart;
+        } while (usedIndices.includes(minibossIndex));
+        
+        usedIndices.push(minibossIndex);
+        const minibossPos = path[minibossIndex];
+        const minibossEnemyType = enemies[Math.floor(Math.random() * enemies.length)];
+        monsters.push({
+            x: minibossPos.x,
+            y: minibossPos.y,
+            texture: 'miniboss',
+            enemies: [{ sprite: minibossEnemyType, health: 60, attack: 15 }]
+        });
+    }
     
     // Positions disponibles (exclure début, boss et miniboss)
-    const usedIndices = [0, pathLength - 1, pathLength - 1 - minibossOffset];
     const availableIndices = [];
-    for (let i = 3; i < pathLength - 6; i++) {
+    for (let i = 3; i < pathLength - 3; i++) {
         if (!usedIndices.includes(i)) availableIndices.push(i);
     }
     
@@ -244,7 +254,7 @@ function generateMapElements(path) {
     }
     
     // Répartition selon configuration
-    const remainingElements = totalElements - 2;
+    const remainingElements = totalElements - 1 - MapConfig.miniboss.count;
     const numMonsters = Math.round(remainingElements * MapConfig.distribution.monsters / 100);
     const numCoins = Math.round(remainingElements * MapConfig.distribution.coins / 100);
     const numChests = Math.floor(remainingElements * MapConfig.distribution.chests / 100);
@@ -315,7 +325,7 @@ function generateMapElements(path) {
     return { monsters, coins, chests, shops };
 }
 
-const MAP_VERSION = 3;
+const MAP_VERSION = 4;
 
 export function generateMap() {
     const { monsters, coins, chests, shops } = generateMapElements(mapData.path);
