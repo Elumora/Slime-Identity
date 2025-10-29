@@ -177,7 +177,7 @@ export class GameScene extends Scene {
 
         this.battleEnemies.forEach((enemyData, i) => {
             const xPos = numEnemies === 1 ? 1550 : startX + (i * spacing);
-            const enemy = new Enemy(this, xPos, 499, enemyData.sprite, 2);
+            const enemy = new Enemy(this, xPos, 499, enemyData.sprite, 0.5);
             enemy.maxHealth = enemyData.health;
             enemy.health = enemyData.health;
             enemy.attackDamage = enemyData.attack;

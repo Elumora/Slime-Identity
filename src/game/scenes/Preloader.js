@@ -48,21 +48,14 @@ export class Preloader extends Scene {
         this.load.image('fatigue', 'assets/Cards/fatigue.png');
 
         // Monsters
-        this.load.spritesheet('plent', 'assets/Enemies/Plent/Idle.png', { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet('archer', 'assets/Enemies/Archer/Idle.png', { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet('black_werewolf', 'assets/Enemies/Black_Werewolf/Idle.png', { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet('fighter', 'assets/Enemies/Fighter/Idle.png', { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet('fire_spirit', 'assets/Enemies/Fire_Spirit/Idle.png', { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet('karasu_tengu', 'assets/Enemies/Karasu_tengu/Idle.png', { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet('kitsune', 'assets/Enemies/Kitsune/Idle.png', { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet('red_werewolf', 'assets/Enemies/Red_Werewolf/Idle.png', { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet('samurai', 'assets/Enemies/Samurai/Idle.png', { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet('shinobi', 'assets/Enemies/Shinobi/Idle.png', { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet('skeleton', 'assets/Enemies/Skeleton/Idle.png', { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet('swordsman', 'assets/Enemies/Swordsman/Idle.png', { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet('white_werewolf', 'assets/Enemies/White_Werewolf/Idle.png', { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet('wizard', 'assets/Enemies/Wizard/Idle.png', { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet('yamabushi_tengu', 'assets/Enemies/Yamabushi_tengu/Idle.png', { frameWidth: 128, frameHeight: 128 });
+        this.load.image('archer', 'assets/Enemies/archer.png');
+        this.load.image('brute', 'assets/Enemies/brute.png');
+        this.load.image('firemage', 'assets/Enemies/firemage.png');
+        this.load.image('sentinellegivre', 'assets/Enemies/sentinellegivre.png');
+        this.load.image('skelettonarcher', 'assets/Enemies/skelettonarcher.png');
+        this.load.image('skeletonwarrior', 'assets/Enemies/skeletonwarrior.png');
+        this.load.image('thief', 'assets/Enemies/thief.png');
+        this.load.image('corruptedgolem', 'assets/Enemies/corruptedgolem.png');
 
 
         // Object

@@ -25,9 +25,9 @@ export class Enemy extends Phaser.GameObjects.Container {
         }
         this.sprite.setScale(scale);
 
-        if (enemyType !== 'character') {
-            this.sprite.setFlipX(true);
-        }
+        // if (enemyType !== 'character') {
+        //     this.sprite.setFlipX(true);
+        // }
 
         this.add(this.sprite);
 

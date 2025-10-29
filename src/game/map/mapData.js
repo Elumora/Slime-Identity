@@ -1,4 +1,5 @@
 import { MapConfig } from '../config/MapConfig';
+import { getRandomNormalEnemy, getMiniboss, getBoss } from '../config/EnemyDatabase';
 
 export const mapData = {
     gridWidth: 6,
@@ -196,12 +197,6 @@ export const mapData = {
 };
 
 function generateMapElements(path) {
-    const enemies = [
-        'plent', 'archer', 'black_werewolf', 'fighter', 'fire_spirit',
-        'karasu_tengu', 'kitsune', 'red_werewolf', 'samurai', 'shinobi',
-        'skeleton', 'swordsman', 'white_werewolf', 'wizard', 'yamabushi_tengu'
-    ];
-    
     const pathLength = path.length;
     const totalElements = MapConfig.totalElements;
     const monsters = [];
@@ -211,12 +206,12 @@ function generateMapElements(path) {
     
     // Boss à la fin
     const bossPos = path[pathLength - 1];
-    const bossEnemyType = enemies[Math.floor(Math.random() * enemies.length)];
+    const bossData = getBoss();
     monsters.push({
         x: bossPos.x,
         y: bossPos.y,
         texture: 'boss',
-        enemies: [{ sprite: bossEnemyType, health: 100, attack: 20 }]
+        enemies: [bossData]
     });
     
     // Miniboss au milieu de la map
@@ -232,12 +227,12 @@ function generateMapElements(path) {
         
         usedIndices.push(minibossIndex);
         const minibossPos = path[minibossIndex];
-        const minibossEnemyType = enemies[Math.floor(Math.random() * enemies.length)];
+        const minibossData = getMiniboss();
         monsters.push({
             x: minibossPos.x,
             y: minibossPos.y,
             texture: 'miniboss',
-            enemies: [{ sprite: minibossEnemyType, health: 60, attack: 15 }]
+            enemies: [minibossData]
         });
     }
     
@@ -296,16 +291,14 @@ function generateMapElements(path) {
         const progress = availableIndices[idx] / pathLength;
         
         if (elements[i] === 'monster') {
-            const enemyType = enemies[Math.floor(Math.random() * enemies.length)];
+            const enemyData = getRandomNormalEnemy();
+            enemyData.health = 15 + Math.floor(progress * 30);
+            enemyData.attack = 5 + Math.floor(progress * 8);
             monsters.push({
                 x: pos.x,
                 y: pos.y,
                 texture: 'monster',
-                enemies: [{
-                    sprite: enemyType,
-                    health: 15 + Math.floor(progress * 30),
-                    attack: 5 + Math.floor(progress * 8)
-                }]
+                enemies: [enemyData]
             });
             lastWasShop = false;
         } else if (elements[i] === 'coin') {
