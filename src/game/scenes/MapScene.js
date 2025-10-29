@@ -56,6 +56,7 @@ export class MapScene extends Scene {
     }
 
     create() {
+        this.sound.play('music-map-01', { loop: true, volume: 0.5 });
         this.cameras.main.setBackgroundColor('#C8FFC8');
         this.mapContainer = this.add.container(0, 0);
 

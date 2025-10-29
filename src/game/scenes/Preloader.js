@@ -99,6 +99,9 @@ export class Preloader extends Scene {
         // Effects
         this.load.spritesheet('effect', 'assets/Effects/Retro Impact Effect Pack 5 A.png', { frameWidth: 96, frameHeight: 96 });
 
+        // MAP
+        this.load.audio('music-map-01', 'assets/Audio/BGM/Champ-des-ames-Fanees.mp3');
+
     }
 
     create() {

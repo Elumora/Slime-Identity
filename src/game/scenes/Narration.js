@@ -7,6 +7,48 @@ export class Narration extends Scene {
 
     create() {
         const bg = this.add.rectangle(960, 540, 1920, 1080, 0x00_00_00);
+
+        const particleGraphics = this.add.graphics();
+        particleGraphics.fillStyle(0xffffff, 1);
+        particleGraphics.fillCircle(8, 8, 8);
+        particleGraphics.generateTexture('particle-skip', 16, 16);
+        particleGraphics.destroy();
+
+        const emitZone = new Phaser.Geom.Rectangle(0, 0, 100, 40);
+        const buttonParticles = this.add.particles(0, 0, 'particle-skip', {
+            speed: { min: 30, max: 60 },
+            angle: { min: 0, max: 360 },
+            alpha: { start: 0.6, end: 0 },
+            scale: { start: 0.3, end: 0.8 },
+            lifespan: 800,
+            frequency: 30,
+            blendMode: 'ADD',
+            emitZone: { type: 'random', source: emitZone }
+        }).setDepth(3).stop();
+
+        const skipButton = this.add.text(1820, 40, 'Passer l\'histoire', {
+            fontFamily: 'Arial',
+            fontSize: 32,
+            color: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 4
+        }).setOrigin(1, 0).setInteractive({ useHandCursor: true }).setDepth(4);
+
+        skipButton.on('pointerover', () => {
+            skipButton.setColor('#ffff00');
+            emitZone.setSize(skipButton.width, skipButton.height);
+            buttonParticles.setPosition(skipButton.x - skipButton.width, skipButton.y).start();
+        });
+
+        skipButton.on('pointerout', () => {
+            skipButton.setColor('#ffffff');
+            buttonParticles.stop();
+        });
+
+        skipButton.on('pointerdown', () => {
+            this.sound.stopAll();
+            this.scene.start('MapScene');
+        });
         const image = this.add.image(960, 540, 'story-01').setAlpha(0).setScale(1);
 
         const subtitleStyle = {
