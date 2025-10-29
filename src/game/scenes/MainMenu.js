@@ -246,7 +246,7 @@ export class MainMenu extends Scene {
         const progress = GameProgress.load();
         const hasGameStarted = progress.currentPathIndex > 0;
 
-        const continueGame = this.add.text(menuX, menuY - spacing, 'Continuer', buttonStyle)
+        this.continueGame = this.add.text(menuX, menuY - spacing, 'Continuer', buttonStyle)
             .setInteractive({ useHandCursor: true })
             .setVisible(hasGameStarted)
             .on('pointerdown', () => {
@@ -254,51 +254,53 @@ export class MainMenu extends Scene {
                 this.scene.start('MapScene');
             })
             .on('pointerover', () => {
-                continueGame.setColor('#ffff00');
-                emitZone.setSize(continueGame.width, continueGame.height);
-                buttonParticles.setPosition(continueGame.x, continueGame.y).start();
+                this.continueGame.setColor('#ffff00');
+                emitZone.setSize(this.continueGame.width, this.continueGame.height);
+                buttonParticles.setPosition(this.continueGame.x, this.continueGame.y).start();
             })
             .on('pointerout', () => {
-                continueGame.setColor('#ffffff');
+                this.continueGame.setColor('#ffffff');
                 buttonParticles.stop();
             });
 
-        const newGame = this.add.text(menuX, menuY, 'Nouvelle Partie', buttonStyle)
+        this.newGame = this.add.text(menuX, menuY, 'Nouvelle Partie', buttonStyle)
             .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => this.showQuestModal())
             .on('pointerover', () => {
-                newGame.setColor('#ffff00');
-                emitZone.setSize(newGame.width, newGame.height);
-                buttonParticles.setPosition(newGame.x, newGame.y).start();
+                this.newGame.setColor('#ffff00');
+                emitZone.setSize(this.newGame.width, this.newGame.height);
+                buttonParticles.setPosition(this.newGame.x, this.newGame.y).start();
             })
             .on('pointerout', () => {
-                newGame.setColor('#ffffff');
+                this.newGame.setColor('#ffffff');
                 buttonParticles.stop();
             });
 
-        const stats = this.add.text(menuX, menuY + spacing * 1, 'Statistiques', buttonStyle)
+        this.stats = this.add.text(menuX, menuY + spacing * 1, 'Statistiques', buttonStyle)
             .setInteractive({ useHandCursor: true })
             .on('pointerover', () => {
-                stats.setColor('#ffff00');
-                emitZone.setSize(stats.width, stats.height);
-                buttonParticles.setPosition(stats.x, stats.y).start();
+                this.stats.setColor('#ffff00');
+                emitZone.setSize(this.stats.width, this.stats.height);
+                buttonParticles.setPosition(this.stats.x, this.stats.y).start();
             })
             .on('pointerout', () => {
-                stats.setColor('#ffffff');
+                this.stats.setColor('#ffffff');
                 buttonParticles.stop();
             });
 
-        const settings = this.add.text(menuX, menuY + spacing * 2, 'Paramètres', buttonStyle)
+        this.settings = this.add.text(menuX, menuY + spacing * 2, 'Paramètres', buttonStyle)
             .setInteractive({ useHandCursor: true })
             .on('pointerover', () => {
-                settings.setColor('#ffff00');
-                emitZone.setSize(settings.width, settings.height);
-                buttonParticles.setPosition(settings.x, settings.y).start();
+                this.settings.setColor('#ffff00');
+                emitZone.setSize(this.settings.width, this.settings.height);
+                buttonParticles.setPosition(this.settings.x, this.settings.y).start();
             })
             .on('pointerout', () => {
-                settings.setColor('#ffffff');
+                this.settings.setColor('#ffffff');
                 buttonParticles.stop();
             });
+
+        this.menuButtons = [this.continueGame, this.newGame, this.stats, this.settings];
 
         this.input.keyboard.on('keydown-C', () => {
             this.sound.stopAll();
@@ -309,8 +311,32 @@ export class MainMenu extends Scene {
     }
 
     showQuestModal() {
+        const overlay = this.add.rectangle(960, 540, 1920, 1080, 0x000000, 0.7).setDepth(2).setAlpha(0);
 
-        const modal = this.add.image(960, 540, 'quest-start').setDepth(3);
+        this.tweens.add({
+            targets: overlay,
+            alpha: 1,
+            duration: 300
+        });
+
+        this.menuButtons.forEach(btn => {
+            this.tweens.add({
+                targets: btn,
+                x: -250,
+                duration: 300,
+                ease: 'Back.easeIn'
+            });
+        });
+
+        const modal = this.add.image(960, 540, 'quest-start').setDepth(3).setAlpha(0).setScale(0.8);
+
+        this.tweens.add({
+            targets: modal,
+            alpha: 1,
+            scale: 1,
+            duration: 400,
+            ease: 'Back.easeOut'
+        });
 
         const text = this.add.text(960, 430, 'Tu ne sais pas encore qui tu es… veux-tu le découvrir ?', {
             fontFamily: 'Arial',
@@ -320,28 +346,35 @@ export class MainMenu extends Scene {
             wordWrap: { width: 800 },
             stroke: '#000000',
             strokeThickness: 6
-        }).setOrigin(0.5, 0).setDepth(3);
+        }).setOrigin(0.5, 0).setDepth(3).setAlpha(0);
+
+        this.tweens.add({
+            targets: text,
+            alpha: 1,
+            duration: 400,
+            delay: 200
+        });
 
         const closeBtn = this.add.image(1405, 276, 'close')
             .setInteractive({ useHandCursor: true })
             .setScale(0.3)
             .setOrigin(0.5)
             .setDepth(4)
-            .on('pointerdown', () => {
-                modal.destroy();
-                text.destroy();
-                closeBtn.destroy();
-                btnYes.destroy();
-                txtYes.destroy();
-                btnNo.destroy();
-                txtNo.destroy();
-            });
+            .setAlpha(0)
+            .on('pointerdown', () => this.closeQuestModal(overlay, modal, text, closeBtn, btnYes, txtYes, btnNo, txtNo));
+
+        this.tweens.add({
+            targets: closeBtn,
+            alpha: 1,
+            duration: 400,
+            delay: 200
+        });
 
 
         const yesY = 430 + 250;
         const gap = 100;
 
-        const btnYes = this.add.image(960, yesY, 'button-green').setInteractive({ useHandCursor: true }).setScale(0.8).setDepth(3);
+        const btnYes = this.add.image(960, yesY, 'button-green').setInteractive({ useHandCursor: true }).setScale(0.8).setDepth(3).setAlpha(0);
         const txtYes = this.add.text(960, yesY, 'oui', {
             fontFamily: 'Arial',
             fontSize: 60,
@@ -350,9 +383,16 @@ export class MainMenu extends Scene {
             stroke: '#000000',
             align: 'center',
             strokeThickness: 6
-        }).setOrigin(0.5, 0.6).setDepth(3);
+        }).setOrigin(0.5, 0.6).setDepth(3).setAlpha(0);
 
-        const btnNo = this.add.image(960, yesY + gap, 'button-red').setInteractive({ useHandCursor: true }).setScale(0.8).setDepth(3);
+        this.tweens.add({
+            targets: [btnYes, txtYes],
+            alpha: 1,
+            duration: 400,
+            delay: 300
+        });
+
+        const btnNo = this.add.image(960, yesY + gap, 'button-red').setInteractive({ useHandCursor: true }).setScale(0.8).setDepth(3).setAlpha(0);
         const txtNo = this.add.text(960, yesY + gap, 'non', {
             fontFamily: 'Arial',
             fontSize: 60,
@@ -360,7 +400,14 @@ export class MainMenu extends Scene {
             stroke: '#000000',
             align: 'center',
             strokeThickness: 6
-        }).setOrigin(0.5, 0.6).setDepth(3);
+        }).setOrigin(0.5, 0.6).setDepth(3).setAlpha(0);
+
+        this.tweens.add({
+            targets: [btnNo, txtNo],
+            alpha: 1,
+            duration: 400,
+            delay: 400
+        });
 
         btnYes.on('pointerdown', () => {
             GameProgress.clear();
@@ -371,6 +418,42 @@ export class MainMenu extends Scene {
             GameProgress.clear();
             this.sound.stopAll();
             this.scene.start('MapScene');
+        });
+    }
+
+    closeQuestModal(overlay, modal, text, closeBtn, btnYes, txtYes, btnNo, txtNo) {
+        this.tweens.add({
+            targets: [modal, text, closeBtn, btnYes, txtYes, btnNo, txtNo],
+            alpha: 0,
+            scale: 0.8,
+            duration: 300,
+            ease: 'Back.easeIn',
+            onComplete: () => {
+                overlay.destroy();
+                modal.destroy();
+                text.destroy();
+                closeBtn.destroy();
+                btnYes.destroy();
+                txtYes.destroy();
+                btnNo.destroy();
+                txtNo.destroy();
+            }
+        });
+
+        this.tweens.add({
+            targets: overlay,
+            alpha: 0,
+            duration: 300
+        });
+
+        this.menuButtons.forEach(btn => {
+            this.tweens.add({
+                targets: btn,
+                x: 100,
+                duration: 400,
+                ease: 'Back.easeOut',
+                delay: 100
+            });
         });
     }
 }
