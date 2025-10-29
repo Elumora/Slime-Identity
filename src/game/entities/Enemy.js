@@ -161,7 +161,7 @@ export class Enemy extends Phaser.GameObjects.Container {
                 const spriteHeight = this.sprite.displayHeight;
                 const attackYOffset = -(spriteHeight / 2 + 10);
 
-                this.attackText = this.scene.add.text(0, attackYOffset + 70, `ATK: ${this.attackDamage}`, {
+                this.attackText = this.scene.add.text(0, attackYOffset, `ATK: ${this.attackDamage}`, {
                     fontSize: '18px',
                     color: '#ccff00',
                     fontStyle: 'bold',
