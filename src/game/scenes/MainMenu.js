@@ -411,11 +411,13 @@ export class MainMenu extends Scene {
 
         btnYes.on('pointerdown', () => {
             GameProgress.clear();
+            localStorage.removeItem('generatedMap');
             this.sound.stopAll();
             this.scene.start('Narration');
         });
         btnNo.on('pointerdown', () => {
             GameProgress.clear();
+            localStorage.removeItem('generatedMap');
             this.sound.stopAll();
             this.scene.start('MapScene');
         });
