@@ -276,8 +276,8 @@ export class MapScene extends Scene {
             targets: this.character,
             x: this.offsetX + targetIsoX,
             y: this.offsetY + targetIsoY - 80,
-            scaleX: 0.48,
-            scaleY: 0.52,
+            scaleX: 0.09,
+            scaleY: 0.12,
             duration: 200,
             ease: 'Quad.easeOut',
             onComplete: () => {
@@ -288,8 +288,8 @@ export class MapScene extends Scene {
                 this.tweens.add({
                     targets: this.character,
                     y: this.offsetY + targetIsoY - 40,
-                    scaleX: 0.52,
-                    scaleY: 0.49,
+                    scaleX: 0.11,
+                    scaleY: 0.08,
                     duration: 200,
                     ease: 'Quad.easeIn',
                     onComplete: () => {
@@ -297,8 +297,8 @@ export class MapScene extends Scene {
                         this.sortContainerByDepth();
                         this.tweens.add({
                             targets: this.character,
-                            scaleX: 0.5,
-                            scaleY: 0.5,
+                            scaleX: 0.1,
+                            scaleY: 0.1,
                             duration: 100,
                             ease: 'Back.easeOut',
                             onComplete: () => {
