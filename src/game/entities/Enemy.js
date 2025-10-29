@@ -47,6 +47,7 @@ export class Enemy extends Phaser.GameObjects.Container {
         }).setOrigin(0.5);
         this.add(this.healthText);
 
+        this.attackIcon = null;
         this.attackText = null;
         this.attackDamage = 0;
 
@@ -157,17 +158,20 @@ export class Enemy extends Phaser.GameObjects.Container {
         this.healthText.setText(`HP: ${this.health}${statusText}`);
 
         if (!this.isPlayer && this.attackDamage > 0 && this.scene.add) {
-            if (!this.attackText) {
+            if (!this.attackIcon) {
                 const spriteHeight = this.sprite.displayHeight;
                 const attackYOffset = -(spriteHeight / 2 + 10);
 
-                this.attackText = this.scene.add.text(0, attackYOffset, `ATK: ${this.attackDamage}`, {
+                this.attackIcon = this.scene.add.image(-15, attackYOffset, 'attackIcon').setScale(0.15);
+                this.add(this.attackIcon);
+
+                this.attackText = this.scene.add.text(10, attackYOffset, `${this.attackDamage}`, {
                     fontSize: '18px',
-                    color: '#ccff00',
+                    color: '#ffffff',
                     fontStyle: 'bold',
                     stroke: '#000000',
                     strokeThickness: 3
-                }).setOrigin(0.5);
+                }).setOrigin(0, 0.5);
                 this.add(this.attackText);
             }
         }

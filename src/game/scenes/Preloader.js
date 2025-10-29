@@ -62,6 +62,7 @@ export class Preloader extends Scene {
         this.load.audio('handleCoin', 'assets/Audio/GUI/handleCoins.ogg');
 
         // GUI
+        this.load.image('attackIcon', 'assets/GUI/attaque.png');
         this.load.image('mana', 'assets/GUI/mana-gui.png');
         this.load.image('deck', 'assets/GUI/deck.png');
         this.load.image('defausse', 'assets/GUI/defausse.png');
