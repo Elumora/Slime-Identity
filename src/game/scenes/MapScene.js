@@ -58,6 +58,12 @@ export class MapScene extends Scene {
     create() {
         this.sound.play('music-map-01', { loop: true, volume: 0.5 });
         this.cameras.main.setBackgroundColor('#C8FFC8');
+
+        const particleGraphics = this.add.graphics();
+        particleGraphics.fillStyle(0xffffff, 1);
+        particleGraphics.fillCircle(8, 8, 8);
+        particleGraphics.generateTexture('particle', 16, 16);
+        particleGraphics.destroy();
         this.mapContainer = this.add.container(0, 0);
 
         this.tileWidth = 128;
@@ -210,19 +216,39 @@ export class MapScene extends Scene {
             this.mapContainer.setScale(newScale);
         });
 
-        // Bouton retour fixé à l'écran
-        const backButton = this.add.text(100, 50, 'RETOUR', {
-            fontSize: '32px',
-            color: '#ffffff',
-            fontStyle: 'bold',
-            backgroundColor: '#333333',
-            padding: { x: 20, y: 10 }
-        }).setInteractive({ useHandCursor: true });
+        const emitZone = new Phaser.Geom.Rectangle(0, 0, 100, 40);
+        const buttonParticles = this.add.particles(0, 0, 'particle', {
+            speed: { min: 30, max: 60 },
+            angle: { min: 0, max: 360 },
+            alpha: { start: 0.6, end: 0 },
+            scale: { start: 0.3, end: 0.8 },
+            lifespan: 800,
+            frequency: 30,
+            blendMode: 'ADD',
+            emitZone: { type: 'random', source: emitZone }
+        }).setDepth(999).setScrollFactor(0).stop();
 
-        backButton.setScrollFactor(0);
-        backButton.on('pointerover', () => backButton.setBackgroundColor('#555555'));
-        backButton.on('pointerout', () => backButton.setBackgroundColor('#333333'));
-        backButton.on('pointerdown', () => this.scene.start('MenuScene'));
+        const backButton = this.add.text(100, 940, 'Retour', {
+            fontFamily: 'Arial',
+            fontSize: 32,
+            color: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 4
+        }).setInteractive({ useHandCursor: true }).setScrollFactor(0).setDepth(1000);
+
+        backButton.on('pointerdown', () => {
+            this.sound.stopAll();
+            this.scene.start('MainMenu');
+        });
+        backButton.on('pointerover', () => {
+            backButton.setColor('#ffff00');
+            emitZone.setSize(backButton.width, backButton.height);
+            buttonParticles.setPosition(backButton.x, backButton.y).start();
+        });
+        backButton.on('pointerout', () => {
+            backButton.setColor('#ffffff');
+            buttonParticles.stop();
+        });
 
         // Contrôle de la grille avec la touche G
         this.input.keyboard.on('keydown-G', () => {
