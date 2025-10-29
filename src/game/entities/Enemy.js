@@ -173,7 +173,7 @@ export class Enemy extends Phaser.GameObjects.Container {
                 ease: 'Power2'
             });
 
-            const color = healthPercent > 0.5 ? 0x00ff00 : healthPercent > 0.25 ? 0xffff00 : 0xff0000;
+            const color = healthPercent > 0.5 ? 0x00ff00 : healthPercent > 0.25 ? 0xffff00 : 0xff675e;
             this.healthBarFill.setFillStyle(color);
         }
 
