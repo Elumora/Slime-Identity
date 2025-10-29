@@ -189,86 +189,116 @@ export const mapData = {
 
     monsters: [],
     coins: [],
-    chests: []
+    chests: [],
+    shops: []
 };
 
-function generateRandomMonsters(path) {
+function generateMapElements(path) {
     const enemies = [
         'plent', 'archer', 'black_werewolf', 'fighter', 'fire_spirit',
         'karasu_tengu', 'kitsune', 'red_werewolf', 'samurai', 'shinobi',
         'skeleton', 'swordsman', 'white_werewolf', 'wizard', 'yamabushi_tengu'
     ];
     
-    const monsters = [];
     const pathLength = path.length;
+    const totalElements = 15;
+    const monsters = [];
+    const coins = [];
+    const chests = [];
+    const shops = [];
     
-    for (let i = 5; i < pathLength; i += Math.floor(Math.random() * 3) + 3) {
-        const pos = path[i];
-        const progress = i / pathLength;
-        const numEnemies = progress > 0.5 ? (Math.random() > 0.5 ? 2 : 1) : 1;
-        
-        const enemyList = [];
-        for (let j = 0; j < numEnemies; j++) {
-            const enemyType = enemies[Math.floor(Math.random() * enemies.length)];
-            const baseHealth = 15 + Math.floor(progress * 40);
-            const baseAttack = 5 + Math.floor(progress * 8);
-            
-            enemyList.push({
-                sprite: enemyType,
-                health: baseHealth + Math.floor(Math.random() * 10),
-                attack: baseAttack + Math.floor(Math.random() * 3)
-            });
-        }
-        
+    // Boss à la fin
+    const bossPos = path[pathLength - 1];
+    const bossEnemyType = enemies[Math.floor(Math.random() * enemies.length)];
+    monsters.push({
+        x: bossPos.x,
+        y: bossPos.y,
+        texture: 'boss',
+        enemies: [{ sprite: bossEnemyType, health: 100, attack: 20 }]
+    });
+    
+    // Miniboss 2 à 4 positions avant le boss
+    const minibossOffset = Math.floor(Math.random() * 3) + 2;
+    const minibossPos = path[pathLength - 1 - minibossOffset];
+    const minibossEnemyType = enemies[Math.floor(Math.random() * enemies.length)];
+    monsters.push({
+        x: minibossPos.x,
+        y: minibossPos.y,
+        texture: 'miniboss',
+        enemies: [{ sprite: minibossEnemyType, health: 60, attack: 15 }]
+    });
+    
+    // Positions disponibles (exclure début, boss et miniboss)
+    const usedIndices = [0, pathLength - 1, pathLength - 1 - minibossOffset];
+    const availableIndices = [];
+    for (let i = 3; i < pathLength - 5; i++) {
+        if (!usedIndices.includes(i)) availableIndices.push(i);
+    }
+    
+    // Mélanger les positions
+    for (let i = availableIndices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [availableIndices[i], availableIndices[j]] = [availableIndices[j], availableIndices[i]];
+    }
+    
+    // Répartition: 80% ennemis, 10% coins, 5% coffres, 5% shops
+    const remainingElements = totalElements - 2;
+    const numMonsters = Math.round(remainingElements * 0.8);
+    const numCoins = Math.round(remainingElements * 0.1);
+    const numChests = Math.floor(remainingElements * 0.05);
+    const numShops = remainingElements - numMonsters - numCoins - numChests;
+    
+    let idx = 0;
+    
+    // Ennemis
+    for (let i = 0; i < numMonsters && idx < availableIndices.length; i++, idx++) {
+        const pos = path[availableIndices[idx]];
+        const enemyType = enemies[Math.floor(Math.random() * enemies.length)];
+        const progress = availableIndices[idx] / pathLength;
         monsters.push({
             x: pos.x,
             y: pos.y,
-            texture: enemyList[0].sprite,
-            enemies: enemyList
+            texture: 'monster',
+            enemies: [{
+                sprite: enemyType,
+                health: 15 + Math.floor(progress * 30),
+                attack: 5 + Math.floor(progress * 8)
+            }]
         });
     }
     
-    return monsters;
-}
-
-function generateRandomCoins(path, objects) {
-    const coins = [];
-    const pathLength = path.length;
-    const existingCoins = objects.filter(obj => obj.texture === 'coin');
-    
-    for (let i = 3; i < pathLength; i += Math.floor(Math.random() * 5) + 4) {
-        const pos = path[i];
+    // Coins
+    for (let i = 0; i < numCoins && idx < availableIndices.length; i++, idx++) {
+        const pos = path[availableIndices[idx]];
         coins.push({ x: pos.x, y: pos.y });
     }
     
-    existingCoins.forEach(coin => {
-        coins.push({ x: coin.x, y: coin.y });
-    });
-    
-    return coins;
-}
-
-function generateRandomChests(path) {
-    const chests = [];
-    const pathLength = path.length;
-    
-    for (let i = 10; i < pathLength; i += Math.floor(Math.random() * 15) + 15) {
-        const pos = path[i];
+    // Coffres
+    for (let i = 0; i < numChests && idx < availableIndices.length; i++, idx++) {
+        const pos = path[availableIndices[idx]];
         chests.push({ x: pos.x, y: pos.y });
     }
     
-    return chests;
+    // Shops
+    for (let i = 0; i < numShops && idx < availableIndices.length; i++, idx++) {
+        const pos = path[availableIndices[idx]];
+        shops.push({ x: pos.x, y: pos.y });
+    }
+    
+    return { monsters, coins, chests, shops };
 }
 
+const MAP_VERSION = 2;
+
 export function generateMap() {
-    const monsters = generateRandomMonsters(mapData.path);
-    const coins = generateRandomCoins(mapData.path, mapData.objects);
-    const chests = generateRandomChests(mapData.path);
+    const { monsters, coins, chests, shops } = generateMapElements(mapData.path);
     
     const generatedMap = {
         monsters,
         coins,
         chests,
+        shops,
+        version: MAP_VERSION,
         timestamp: Date.now()
     };
     
@@ -279,7 +309,10 @@ export function generateMap() {
 export function loadMap() {
     const saved = localStorage.getItem('generatedMap');
     if (saved) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (parsed.version === MAP_VERSION) {
+            return parsed;
+        }
     }
     return generateMap();
 }
@@ -288,3 +321,4 @@ const loadedMap = loadMap();
 mapData.monsters = loadedMap.monsters;
 mapData.coins = loadedMap.coins;
 mapData.chests = loadedMap.chests || [];
+mapData.shops = loadedMap.shops || [];

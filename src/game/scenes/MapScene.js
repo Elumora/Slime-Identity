@@ -40,7 +40,8 @@ export class MapScene extends Scene {
         this.load.image('stoneGrass', 'assets/Map/objects/Stone with Shadow.png');
         this.load.image('stoneWater', 'assets/Map/objects/Stone with Shadow-1.png');
         this.load.image('coin', 'assets/Map/objects/Coin-Big.png');
-        this.load.image('chest', 'assets/Map/objects/Chest.png');
+        this.load.image('chest', 'assets/GUI/coffre.png');
+        this.load.image('shop', 'assets/GUI/shop.png');
 
         // Monsters
         this.load.image('monster', 'assets/GUI/ennemi.png');
@@ -101,26 +102,10 @@ export class MapScene extends Scene {
         this.collectedCoins = progress.collectedCoins || [];
         this.collectedChests = progress.collectedChests || [];
         this.defeatedMonsters = progress.defeatedMonsters || [];
+        this.visitedShops = progress.visitedShops || [];
         const startPos = this.pathTiles[this.currentPathIndex];
         const isoX = (startPos.x - startPos.y) * ((this.tileWidth + this.spacing) / 2);
         const isoY = (startPos.x + startPos.y) * ((this.tileHeight + this.spacing) / 2);
-
-        const enemyTypes = [
-            'plent', 'archer', 'black_werewolf', 'fighter', 'fire_spirit',
-            'karasu_tengu', 'kitsune', 'red_werewolf', 'samurai', 'shinobi',
-            'skeleton', 'swordsman', 'white_werewolf', 'wizard', 'yamabushi_tengu'
-        ];
-
-        enemyTypes.forEach(enemy => {
-            if (!this.anims.exists(`${enemy}-idle`)) {
-                this.anims.create({
-                    key: `${enemy}-idle`,
-                    frames: this.anims.generateFrameNumbers(enemy, { start: 0, end: 4 }),
-                    frameRate: 8,
-                    repeat: -1
-                });
-            }
-        });
 
         this.renderMap();
 
@@ -291,27 +276,29 @@ export class MapScene extends Scene {
             targets: this.character,
             x: this.offsetX + targetIsoX,
             y: this.offsetY + targetIsoY - 80,
-            scaleX: 0.09,
-            scaleY: 0.12,
+            scaleX: 0.48,
+            scaleY: 0.52,
             duration: 200,
             ease: 'Quad.easeOut',
             onComplete: () => {
                 this.sortContainerByDepth();
                 this.checkCoinCollision();
+                this.checkShopCollision();
                 this.checkMonsterCollision();
                 this.tweens.add({
                     targets: this.character,
                     y: this.offsetY + targetIsoY - 40,
-                    scaleX: 0.11,
-                    scaleY: 0.08,
+                    scaleX: 0.52,
+                    scaleY: 0.49,
                     duration: 200,
                     ease: 'Quad.easeIn',
                     onComplete: () => {
                         this.checkChestCollision();
+                        this.sortContainerByDepth();
                         this.tweens.add({
                             targets: this.character,
-                            scaleX: 0.1,
-                            scaleY: 0.1,
+                            scaleX: 0.5,
+                            scaleY: 0.5,
                             duration: 100,
                             ease: 'Back.easeOut',
                             onComplete: () => {
@@ -411,7 +398,7 @@ export class MapScene extends Scene {
 
             const isoX = (chest.x - chest.y) * ((this.tileWidth + this.spacing) / 2);
             const isoY = (chest.x + chest.y) * ((this.tileHeight + this.spacing) / 2);
-            const chestObj = this.add.image(this.offsetX + isoX, this.offsetY + isoY - 20, 'chest');
+            const chestObj = this.add.image(this.offsetX + isoX, this.offsetY + isoY - 20, 'chest').setScale(0.3);
             chestObj.setDepth(chest.x + chest.y + 100);
             chestObj.setData('gridX', chest.x);
             chestObj.setData('gridY', chest.y);
@@ -427,11 +414,10 @@ export class MapScene extends Scene {
 
             const isoX = (monster.x - monster.y) * ((this.tileWidth + this.spacing) / 2);
             const isoY = (monster.x + monster.y) * ((this.tileHeight + this.spacing) / 2);
-            const monsterSprite = this.add.sprite(this.offsetX + isoX, this.offsetY + isoY - 80, monster.texture);
+            const monsterSprite = this.add.image(this.offsetX + isoX, this.offsetY + isoY - 40, monster.texture).setScale(0.3);
             monsterSprite.setDepth(monster.x + monster.y + 0.5);
             monsterSprite.setData('gridX', monster.x);
             monsterSprite.setData('gridY', monster.y);
-            monsterSprite.play(`${monster.texture}-idle`);
 
             if (isDefeated) {
                 monsterSprite.setTint(0x808080);
@@ -440,6 +426,22 @@ export class MapScene extends Scene {
 
             this.mapContainer.add(monsterSprite);
             this.monsters.push(monsterSprite);
+        });
+
+        // Render shops
+        this.shops = [];
+        mapData.shops.forEach(shop => {
+            const shopKey = `${shop.x},${shop.y}`;
+            if (this.visitedShops.includes(shopKey)) return;
+
+            const isoX = (shop.x - shop.y) * ((this.tileWidth + this.spacing) / 2);
+            const isoY = (shop.x + shop.y) * ((this.tileHeight + this.spacing) / 2);
+            const shopObj = this.add.image(this.offsetX + isoX, this.offsetY + isoY - 20, 'shop').setScale(0.3);
+            shopObj.setDepth(shop.x + shop.y + 100);
+            shopObj.setData('gridX', shop.x);
+            shopObj.setData('gridY', shop.y);
+            this.mapContainer.add(shopObj);
+            this.shops.push(shopObj);
         });
     }
 
@@ -552,7 +554,32 @@ export class MapScene extends Scene {
         progress.collectedCoins = this.collectedCoins;
         progress.collectedChests = this.collectedChests;
         progress.defeatedMonsters = this.defeatedMonsters;
+        progress.visitedShops = this.visitedShops;
         GameProgress.save(progress);
+    }
+
+    checkShopCollision() {
+        const charX = this.pathTiles[this.currentPathIndex].x;
+        const charY = this.pathTiles[this.currentPathIndex].y;
+
+        this.shops.forEach(shop => {
+            if (shop.active && shop.getData('gridX') === charX && shop.getData('gridY') === charY) {
+                this.visitShop(shop);
+            }
+        });
+    }
+
+    visitShop(shop) {
+        const shopKey = `${shop.getData('gridX')},${shop.getData('gridY')}`;
+        this.visitedShops.push(shopKey);
+        this.saveProgress();
+
+        this.tweens.add({
+            targets: shop,
+            alpha: 0.5,
+            duration: 300,
+            ease: 'Power2'
+        });
     }
 
     checkChestCollision() {
