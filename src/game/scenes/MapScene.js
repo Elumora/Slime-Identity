@@ -428,6 +428,15 @@ export class MapScene extends Scene {
             if (isDefeated) {
                 monsterSprite.setTint(0x808080);
                 monsterSprite.setAlpha(0.5);
+            } else {
+                this.tweens.add({
+                    targets: monsterSprite,
+                    scaleY: '+=0.02',
+                    duration: 1200,
+                    ease: 'Sine.easeInOut',
+                    yoyo: true,
+                    repeat: -1
+                });
             }
 
             this.mapContainer.add(monsterSprite);
