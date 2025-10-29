@@ -60,6 +60,8 @@ export class Enemy extends Phaser.GameObjects.Container {
         this.attackText = null;
         this.attackDamage = 0;
         this.statusIcons = [];
+        this.shieldIcon = null;
+        this.shieldText = null;
 
         this.setSize(this.sprite.width * 2, this.sprite.height * 2);
         scene.add.existing(this);
@@ -153,9 +155,6 @@ export class Enemy extends Phaser.GameObjects.Container {
 
         let statusText = '';
         const totalShield = this.shield + (this.temporaryShield || 0);
-        if (totalShield > 0) {
-            statusText += ` [${totalShield}]`;
-        }
         if (this.blockIncrement && this.blockIncrement.value > 0) {
             statusText += ` +${this.blockIncrement.value}B`;
         }
@@ -180,6 +179,32 @@ export class Enemy extends Phaser.GameObjects.Container {
         this.statusIcons.forEach(icon => icon.destroy());
         this.statusIcons = [];
 
+        if (this.shieldIcon) {
+            this.shieldIcon.destroy();
+            this.shieldIcon = null;
+        }
+        if (this.shieldText) {
+            this.shieldText.destroy();
+            this.shieldText = null;
+        }
+
+        if (totalShield > 0) {
+            const spriteHeight = this.sprite.displayHeight;
+            const shieldYOffset = -(spriteHeight / 2 + 35);
+
+            this.shieldIcon = this.scene.add.image(-15, shieldYOffset, 'shieldIcon').setScale(0.15);
+            this.add(this.shieldIcon);
+
+            this.shieldText = this.scene.add.text(10, shieldYOffset, `${totalShield}`, {
+                fontSize: '18px',
+                color: '#ffffff',
+                fontStyle: 'bold',
+                stroke: '#000000',
+                strokeThickness: 3
+            }).setOrigin(0, 0.5);
+            this.add(this.shieldText);
+        }
+
         const spriteHeight = this.sprite.displayHeight;
 
         if (!this.isPlayer && this.attackDamage > 0 && this.scene.add) {
@@ -199,14 +224,14 @@ export class Enemy extends Phaser.GameObjects.Container {
                 this.add(this.attackText);
             }
 
-            const statusYOffset = -(spriteHeight / 2 + 65);
+            const statusYOffset = totalShield > 0 ? -(spriteHeight / 2 + 100) : -(spriteHeight / 2 + 75);
             let iconX = -12;
 
             if (this.debuffs.fragile) {
                 const fragileIcon = this.scene.add.image(iconX, statusYOffset, 'fragileIcon').setScale(0.15);
                 this.add(fragileIcon);
                 this.statusIcons.push(fragileIcon);
-                iconX += 25;
+                iconX += 35;
             }
             if (this.debuffs.slow) {
                 const slowIcon = this.scene.add.image(iconX, statusYOffset, 'slowIcon').setScale(0.15);
