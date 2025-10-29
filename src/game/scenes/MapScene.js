@@ -42,14 +42,13 @@ export class MapScene extends Scene {
         this.load.image('coin', 'assets/Map/objects/Coin-Big.png');
         this.load.image('chest', 'assets/Map/objects/Chest.png');
 
+        // Monsters
+        this.load.image('monster', 'assets/GUI/ennemi.png');
+        this.load.image('miniboss', 'assets/GUI/mini-boss.png');
+        this.load.image('boss', 'assets/GUI/boss.png');
+
         // Character
         this.load.image('character', 'assets/GUI/slime-bleu-opacite.png');
-
-        // Monsters
-        this.load.spritesheet('plent', 'assets/Enemies/Plent/Idle.png', {
-            frameWidth: 128,
-            frameHeight: 128
-        });
 
         // GUI
         this.load.image('coinCounter', 'assets/GUI/Coin-counter.png');
