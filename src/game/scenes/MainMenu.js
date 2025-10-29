@@ -309,6 +309,7 @@ export class MainMenu extends Scene {
     }
 
     showQuestModal() {
+
         const modal = this.add.image(960, 540, 'quest-start').setDepth(3);
 
         const text = this.add.text(960, 430, 'Tu ne sais pas encore qui tu es… veux-tu le découvrir ?', {
@@ -321,8 +322,23 @@ export class MainMenu extends Scene {
             strokeThickness: 6
         }).setOrigin(0.5, 0).setDepth(3);
 
+        const closeBtn = this.add.image(1405, 276, 'close')
+            .setInteractive({ useHandCursor: true })
+            .setScale(0.3)
+            .setOrigin(0.5)
+            .setDepth(4)
+            .on('pointerdown', () => {
+                modal.destroy();
+                text.destroy();
+                closeBtn.destroy();
+                btnYes.destroy();
+                txtYes.destroy();
+                btnNo.destroy();
+                txtNo.destroy();
+            });
 
-        const yesY = 430 + 250
+
+        const yesY = 430 + 250;
         const gap = 100;
 
         const btnYes = this.add.image(960, yesY, 'button-green').setInteractive({ useHandCursor: true }).setScale(0.8).setDepth(3);
