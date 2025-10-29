@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { EventBus } from '../EventBus';
-import { mapData } from '../map/mapData';
+import { mapData, loadMap } from '../map/mapData';
 import { GameProgress } from '../systems/GameProgress';
 
 export class MapScene extends Scene {
@@ -56,6 +56,12 @@ export class MapScene extends Scene {
     }
 
     create() {
+        const loadedMap = loadMap();
+        mapData.monsters = loadedMap.monsters;
+        mapData.coins = loadedMap.coins;
+        mapData.chests = loadedMap.chests || [];
+        mapData.shops = loadedMap.shops || [];
+
         this.sound.play('music-map-01', { loop: true, volume: 0.5 });
         this.cameras.main.setBackgroundColor('#C8FFC8');
 
