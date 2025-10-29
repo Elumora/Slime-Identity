@@ -50,6 +50,7 @@ export class Enemy extends Phaser.GameObjects.Container {
         this.attackIcon = null;
         this.attackText = null;
         this.attackDamage = 0;
+        this.statusIcons = [];
 
         this.setSize(this.sprite.width * 2, this.sprite.height * 2);
         scene.add.existing(this);
@@ -146,20 +147,18 @@ export class Enemy extends Phaser.GameObjects.Container {
         if (totalShield > 0) {
             statusText += ` [${totalShield}]`;
         }
-        if (this.debuffs.fragile) {
-            statusText += ' F';
-        }
-        if (this.debuffs.slow) {
-            statusText += ' S';
-        }
         if (this.blockIncrement && this.blockIncrement.value > 0) {
             statusText += ` +${this.blockIncrement.value}B`;
         }
         this.healthText.setText(`HP: ${this.health}${statusText}`);
 
+        this.statusIcons.forEach(icon => icon.destroy());
+        this.statusIcons = [];
+
+        const spriteHeight = this.sprite.displayHeight;
+
         if (!this.isPlayer && this.attackDamage > 0 && this.scene.add) {
             if (!this.attackIcon) {
-                const spriteHeight = this.sprite.displayHeight;
                 const attackYOffset = -(spriteHeight / 2 + 10);
 
                 this.attackIcon = this.scene.add.image(-15, attackYOffset, 'attackIcon').setScale(0.15);
@@ -173,6 +172,21 @@ export class Enemy extends Phaser.GameObjects.Container {
                     strokeThickness: 3
                 }).setOrigin(0, 0.5);
                 this.add(this.attackText);
+            }
+
+            const statusYOffset = -(spriteHeight / 2 + 65);
+            let iconX = -12;
+
+            if (this.debuffs.fragile) {
+                const fragileIcon = this.scene.add.image(iconX, statusYOffset, 'fragileIcon').setScale(0.15);
+                this.add(fragileIcon);
+                this.statusIcons.push(fragileIcon);
+                iconX += 25;
+            }
+            if (this.debuffs.slow) {
+                const slowIcon = this.scene.add.image(iconX, statusYOffset, 'slowIcon').setScale(0.15);
+                this.add(slowIcon);
+                this.statusIcons.push(slowIcon);
             }
         }
     }
