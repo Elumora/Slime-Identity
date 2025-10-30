@@ -122,4 +122,44 @@ export class UIManager {
             text.setAlpha(0.5);
         }
     }
+
+    showPhaseMessage(mainText, subText = null, duration = 2000) {
+        const main = this.scene.add.text(960, subText ? 500 : 540, mainText, {
+            fontSize: '72px',
+            color: '#ffffff',
+            fontStyle: 'bold',
+            stroke: '#000000',
+            strokeThickness: 8
+        }).setOrigin(0.5).setDepth(20001).setAlpha(0);
+
+        let sub = null;
+        if (subText) {
+            sub = this.scene.add.text(960, 580, subText, {
+                fontSize: '48px',
+                color: '#ffff00',
+                fontStyle: 'bold',
+                stroke: '#000000',
+                strokeThickness: 6
+            }).setOrigin(0.5).setDepth(20001).setAlpha(0);
+        }
+
+        this.scene.tweens.add({
+            targets: [main, sub].filter(t => t),
+            alpha: 1,
+            duration: 300,
+            onComplete: () => {
+                this.scene.time.delayedCall(duration, () => {
+                    this.scene.tweens.add({
+                        targets: [main, sub].filter(t => t),
+                        alpha: 0,
+                        duration: 300,
+                        onComplete: () => {
+                            main.destroy();
+                            if (sub) sub.destroy();
+                        }
+                    });
+                });
+            }
+        });
+    }
 }

@@ -86,7 +86,22 @@ export class TurnManager {
                 player.updateHealthBar();
             }
 
-            this.scene.uiManager.setEndTurnButtonState(true, this.scene.endTurnBtn, this.scene.endTurnText);
+            this.scene.mana = this.scene.maxMana;
+            this.scene.updateManaDisplay();
+
+            if (this.scene.cardManager.deck.length < this.scene.maxHandSize && this.scene.cardManager.discard.length > 0) {
+                this.scene.shuffleDiscardIntoDeck();
+            }
+
+            this.scene.drawCards(this.scene.maxHandSize);
+
+            this.scene.time.delayedCall(500, () => {
+                this.scene.turnNumber++;
+                this.scene.uiManager.showPhaseMessage('Tour du joueur', `Phase ${this.scene.turnNumber}`, 1500);
+                this.scene.time.delayedCall(1800, () => {
+                    this.scene.uiManager.setEndTurnButtonState(true, this.scene.endTurnBtn, this.scene.endTurnText);
+                });
+            });
         });
     }
 
@@ -102,6 +117,21 @@ export class TurnManager {
             player.updateHealthBar();
         }
 
-        this.scene.uiManager.setEndTurnButtonState(true, this.scene.endTurnBtn, this.scene.endTurnText);
+        this.scene.mana = this.scene.maxMana;
+        this.scene.updateManaDisplay();
+
+        if (this.scene.cardManager.deck.length < this.scene.maxHandSize && this.scene.cardManager.discard.length > 0) {
+            this.scene.shuffleDiscardIntoDeck();
+        }
+
+        this.scene.drawCards(this.scene.maxHandSize);
+
+        this.scene.time.delayedCall(500, () => {
+            this.scene.turnNumber++;
+            this.scene.uiManager.showPhaseMessage('Tour du joueur', `Phase ${this.scene.turnNumber}`, 1500);
+            this.scene.time.delayedCall(1800, () => {
+                this.scene.uiManager.setEndTurnButtonState(true, this.scene.endTurnBtn, this.scene.endTurnText);
+            });
+        });
     }
 }

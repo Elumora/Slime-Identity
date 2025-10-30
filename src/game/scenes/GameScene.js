@@ -42,6 +42,7 @@ export class GameScene extends Scene {
         this.discardedCards = 0;
         this.currentGameDamageDealt = 0;
         this.nextAttackDuplicated = false;
+        this.turnNumber = 1;
 
         const endTurnBtn = this.uiManager.createEndTurnButton(() => this.endTurn());
         this.endTurnBtn = endTurnBtn.btn;
@@ -62,9 +63,14 @@ export class GameScene extends Scene {
         this.enemies = this.battleManager.createEnemies(this.battleEnemies);
         this.battleManager.animatePlayerEntrance(this.player);
         
+        this.uiManager.showPhaseMessage('Début du combat', null, 1000);
+        
         this.time.delayedCall(1500, () => {
             this.cardManager.dealCards();
             this.updateDeckDisplay();
+            this.time.delayedCall(1000, () => {
+                this.uiManager.showPhaseMessage('Tour du joueur', `Phase ${this.turnNumber}`, 1500);
+            });
         });
 
         this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
@@ -164,10 +170,15 @@ export class GameScene extends Scene {
     }
 
     drawCards(count) {
-        if (this.cardManager.deck.length === 0) {
+        if (this.cardManager.deck.length === 0 && this.cardManager.discard.length === 0) {
             this.checkDeckDefeat();
             return;
         }
+        
+        if (this.cardManager.deck.length === 0 && this.cardManager.discard.length > 0) {
+            this.shuffleDiscardIntoDeck();
+        }
+        
         this.cardManager.drawCards(count);
         this.updateDeckDisplay();
     }
@@ -208,17 +219,10 @@ export class GameScene extends Scene {
         this.updateDiscardDisplay();
 
         this.time.delayedCall(400, () => {
-            this.mana = this.maxMana;
-            this.updateManaDisplay();
-
-            if (this.cardManager.deck.length < this.maxHandSize && this.cardManager.discard.length > 0) {
-                this.shuffleDiscardIntoDeck();
-            }
-
-            this.drawCards(this.maxHandSize);
+            this.uiManager.showPhaseMessage('Tour de l\'ennemi', null, 1500);
         });
 
-        this.time.delayedCall(1200, () => {
+        this.time.delayedCall(2600, () => {
             this.turnManager.executeEnemyTurn(this.enemies, this.player, this.skipNextEnemyTurn);
             if (this.skipNextEnemyTurn) {
                 this.skipNextEnemyTurn = false;

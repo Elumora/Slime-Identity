@@ -88,13 +88,23 @@ export class BattleManager {
         if (aliveEnemies.length > 0) return false;
 
         this.scene.time.delayedCall(250, () => {
-            this.scene.add.text(960, 540, 'VICTORY!', {
-                fontSize: '64px',
-                color: '#ffff00',
+            const bg = this.scene.add.rectangle(960, 540, 1920, 1080, 0x000000, 0.8).setDepth(10000);
+            
+            const victoryText = this.scene.add.text(960, 540, 'VICTOIRE !', {
+                fontSize: '96px',
+                color: '#FFD700',
                 fontStyle: 'bold',
                 stroke: '#000000',
-                strokeThickness: 6
-            }).setOrigin(0.5).setDepth(10000);
+                strokeThickness: 10
+            }).setOrigin(0.5).setDepth(10001).setAlpha(0);
+
+            this.scene.tweens.add({
+                targets: victoryText,
+                alpha: 1,
+                scale: 1.2,
+                duration: 500,
+                ease: 'Back.easeOut'
+            });
 
             if (monsterX !== undefined && monsterY !== undefined) {
                 const progress = GameProgress.load();
@@ -106,7 +116,7 @@ export class BattleManager {
                 }
             }
 
-            this.scene.time.delayedCall(500, () => {
+            this.scene.time.delayedCall(2000, () => {
                 const progress = GameProgress.load();
                 progress.playerHealth = this.player.health;
                 GameProgress.save(progress);
@@ -121,13 +131,23 @@ export class BattleManager {
         if (this.player.health > 0) return false;
 
         this.scene.time.delayedCall(500, () => {
-            this.scene.add.text(960, 540, 'DEFEAT!', {
-                fontSize: '64px',
-                color: '#ff0000',
+            const bg = this.scene.add.rectangle(960, 540, 1920, 1080, 0x000000, 0.8).setDepth(10000);
+            
+            const defeatText = this.scene.add.text(960, 540, 'DÉFAITE', {
+                fontSize: '96px',
+                color: '#FF0000',
                 fontStyle: 'bold',
                 stroke: '#000000',
-                strokeThickness: 6
-            }).setOrigin(0.5).setDepth(10000);
+                strokeThickness: 10
+            }).setOrigin(0.5).setDepth(10001).setAlpha(0);
+
+            this.scene.tweens.add({
+                targets: defeatText,
+                alpha: 1,
+                scale: 1.2,
+                duration: 500,
+                ease: 'Back.easeOut'
+            });
 
             this.scene.time.delayedCall(3000, () => {
                 GameProgress.clear();
@@ -142,14 +162,31 @@ export class BattleManager {
         const aliveEnemies = this.enemies.filter(e => e.active);
         if (aliveEnemies.length === 0) return false;
 
-        this.scene.add.text(960, 540, 'DEFEAT!\nNo cards left', {
-            fontSize: '64px',
-            color: '#ff0000',
+        const bg = this.scene.add.rectangle(960, 540, 1920, 1080, 0x000000, 0.8).setDepth(10000);
+        
+        const defeatText = this.scene.add.text(960, 480, 'DÉFAITE', {
+            fontSize: '96px',
+            color: '#FF0000',
             fontStyle: 'bold',
             stroke: '#000000',
-            strokeThickness: 6,
-            align: 'center'
-        }).setOrigin(0.5).setDepth(10000);
+            strokeThickness: 10
+        }).setOrigin(0.5).setDepth(10001).setAlpha(0);
+
+        const subText = this.scene.add.text(960, 600, 'Plus de cartes', {
+            fontSize: '48px',
+            color: '#ffffff',
+            fontStyle: 'bold',
+            stroke: '#000000',
+            strokeThickness: 6
+        }).setOrigin(0.5).setDepth(10001).setAlpha(0);
+
+        this.scene.tweens.add({
+            targets: [defeatText, subText],
+            alpha: 1,
+            scale: 1.2,
+            duration: 500,
+            ease: 'Back.easeOut'
+        });
 
         this.scene.time.delayedCall(3000, () => {
             GameProgress.clear();
