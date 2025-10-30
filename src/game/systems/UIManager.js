@@ -20,12 +20,44 @@ export class UIManager {
     }
 
     createManaDisplay(initialMana) {
-        this.scene.add.image(170, 850, 'mana').setScale(0.5);
+        const manaIcon = this.scene.add.image(170, 850, 'mana').setScale(0.5);
+        manaIcon.setInteractive({ useHandCursor: true });
+        
         const text = this.scene.add.text(170, 850, initialMana.toString(), {
             fontSize: '32px',
             color: '#ffffff',
             fontStyle: 'bold'
         }).setOrigin(0.5);
+
+        let tooltip = null;
+
+        manaIcon.on('pointerdown', () => {
+            if (tooltip) {
+                tooltip.bg.destroy();
+                tooltip.text.destroy();
+                tooltip = null;
+            } else {
+                const bg = this.scene.add.rectangle(170, 750, 300, 80, 0x000000, 0.9)
+                    .setDepth(1000)
+                    .setStrokeStyle(2, 0x4a90e2);
+                
+                const tooltipText = this.scene.add.text(170, 750, 'Mana : ressource pour\njouer des cartes', {
+                    fontSize: '18px',
+                    color: '#ffffff',
+                    align: 'center'
+                }).setOrigin(0.5).setDepth(1001);
+
+                tooltip = { bg, text: tooltipText };
+
+                this.scene.time.delayedCall(3000, () => {
+                    if (tooltip) {
+                        tooltip.bg.destroy();
+                        tooltip.text.destroy();
+                        tooltip = null;
+                    }
+                });
+            }
+        });
 
         return text;
     }
