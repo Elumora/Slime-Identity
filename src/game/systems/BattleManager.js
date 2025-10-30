@@ -30,6 +30,7 @@ export class BattleManager {
             enemy.maxHealth = enemyData.health;
             enemy.health = enemyData.health;
             enemy.attackDamage = enemyData.attack;
+            enemy.attackPattern = enemyData.pattern || null;
             enemy.updateHealthBar();
             this.enemies.push(enemy);
         });

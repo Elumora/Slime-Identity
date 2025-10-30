@@ -4,31 +4,36 @@ export const ENEMY_DATABASE = {
         sprite: 'archer',
         health: 18,
         attack: 5,
-        type: 'normal'
+        type: 'normal',
+        pattern: null
     },
     brute: {
         sprite: 'brute',
         health: 25,
         attack: 7,
-        type: 'normal'
+        type: 'normal',
+        pattern: null
     },
     firemage: {
         sprite: 'firemage',
         health: 15,
         attack: 6,
-        type: 'normal'
+        type: 'normal',
+        pattern: null
     },
     skelettonarcher: {
         sprite: 'skelettonarcher',
         health: 12,
         attack: 4,
-        type: 'normal'
+        type: 'normal',
+        pattern: null
     },
     thief: {
         sprite: 'thief',
         health: 14,
         attack: 5,
-        type: 'normal'
+        type: 'normal',
+        pattern: null
     },
     
     // Mini-boss
@@ -36,7 +41,8 @@ export const ENEMY_DATABASE = {
         sprite: 'sentinellegivre',
         health: 40,
         attack: 10,
-        type: 'miniboss'
+        type: 'miniboss',
+        pattern: null
     },
     
     // Boss
@@ -44,7 +50,8 @@ export const ENEMY_DATABASE = {
         sprite: 'corruptedgolem',
         health: 80,
         attack: 15,
-        type: 'boss'
+        type: 'boss',
+        pattern: null
     },
     
     // Invocation
@@ -52,7 +59,8 @@ export const ENEMY_DATABASE = {
         sprite: 'skeletonwarrior',
         health: 10,
         attack: 3,
-        type: 'summon'
+        type: 'summon',
+        pattern: null
     }
 };
 
