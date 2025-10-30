@@ -73,9 +73,7 @@ export class GameScene extends Scene {
             });
         });
 
-        this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
-            gameObject.emit('drag', pointer, dragX, dragY);
-        });
+
 
         this.scene.launch('DevGrid');
 

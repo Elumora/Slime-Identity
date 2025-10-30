@@ -66,7 +66,8 @@ export class Card extends Phaser.GameObjects.Container {
         this.setInteractive({
             hitArea: new Phaser.Geom.Rectangle(0, 0, hitWidth, hitHeight),
             hitAreaCallback: Phaser.Geom.Rectangle.Contains,
-            useHandCursor: true
+            useHandCursor: true,
+            draggable: true
         });
         this.dragStartX = 0;
         this.dragStartY = 0;
@@ -79,8 +80,10 @@ export class Card extends Phaser.GameObjects.Container {
         this.on('pointerover', () => this.onHover());
         this.on('pointerout', () => this.onOut());
         this.on('pointerdown', (pointer) => this.onPointerDown(pointer));
-        this.on('pointermove', (pointer) => this.onPointerMove(pointer));
         this.on('pointerup', (pointer) => this.onPointerUp(pointer));
+        this.on('dragstart', (pointer) => this.onDragStart(pointer));
+        this.on('drag', (pointer, dragX, dragY) => this.onDrag(pointer, dragX, dragY));
+        this.on('dragend', (pointer) => this.onDragEnd(pointer));
     }
 
     onPointerDown(pointer) {
@@ -88,21 +91,8 @@ export class Card extends Phaser.GameObjects.Container {
         this.dragStartY = pointer.y;
     }
 
-    onPointerMove(pointer) {
-        if (!pointer.isDown) return;
-        const distance = Phaser.Math.Distance.Between(this.dragStartX, this.dragStartY, pointer.x, pointer.y);
-        if (distance > 10 && !this.isDragging) {
-            this.onDragStart(pointer);
-        }
-        if (this.isDragging) {
-            this.onDrag(pointer, pointer.x, pointer.y);
-        }
-    }
-
     onPointerUp(pointer) {
-        if (this.isDragging) {
-            this.onDragEnd(pointer);
-        } else {
+        if (!this.isDragging) {
             this.onClick();
         }
     }

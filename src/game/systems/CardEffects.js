@@ -14,15 +14,22 @@ export class CardEffects {
             scene.cardsPlayedThisTurn++;
         }
 
+        scene.removeCardFromHand(card);
+
         if (value && (type === CARD_TYPES.ATTACK || type === CARD_TYPES.SUSTAIN)) {
             this.executeDamage(card, scene, target, value, isAOE);
         }
 
         if (effects && effects.length > 0) {
-            effects.forEach(effect => this.executeEffect(effect, card, scene, target));
+            let hasBlockOnDiscard = false;
+            effects.forEach(effect => {
+                if (effect.type === 'blockOnDiscard') hasBlockOnDiscard = true;
+                this.executeEffect(effect, card, scene, target);
+            });
+            if (hasBlockOnDiscard && !scene.discardMode) {
+                scene.player.blockOnDiscard = 0;
+            }
         }
-
-        scene.removeCardFromHand(card);
     }
 
     static executeDamage(card, scene, target, value, isAOE) {
@@ -173,6 +180,7 @@ export class CardEffects {
                 this.discardInteractive(scene, effect.value);
                 break;
             case 'blockOnDiscard':
+                if (!scene.player.blockOnDiscard) scene.player.blockOnDiscard = 0;
                 scene.player.blockOnDiscard = effect.value;
                 break;
             case 'copyLastPlayed':
@@ -226,7 +234,10 @@ export class CardEffects {
     }
 
     static discardInteractive(scene, count) {
-        if (scene.hand.length === 0) return;
+        if (scene.hand.length === 0) {
+            scene.player.blockOnDiscard = 0;
+            return;
+        }
         
         scene.discardMode = true;
         scene.discardCount = count;
