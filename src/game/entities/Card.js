@@ -98,7 +98,7 @@ export class Card extends Phaser.GameObjects.Container {
     }
 
     onClick() {
-        if (this.scene.discardMode) {
+        if (this.scene.discardMode && !this.isBeingPlayed) {
             this.handleDiscard();
             return;
         }
@@ -299,6 +299,7 @@ export class Card extends Phaser.GameObjects.Container {
     }
 
     executeCard(target) {
+        this.isBeingPlayed = true;
         if (this.cardData.sound && this.scene.sound) {
             this.scene.sound.play(this.cardData.sound);
         } else if (this.scene.sound) {
