@@ -29,6 +29,8 @@ export class PatternManager {
                 return this.executeBlock(enemy, action)
             case PATTERN_ACTIONS.DODGE:
                 return this.executeDodge(enemy)
+            case PATTERN_ACTIONS.SUMMON:
+                return this.executeSummon(enemy, action)
             default:
                 return this.defaultAttack(enemy, player)
         }
@@ -63,6 +65,12 @@ export class PatternManager {
         enemy.isDodging = true
         
         return { type: 'dodge' }
+    }
+
+    static executeSummon(enemy, action) {
+        const summonType = action.summonType || 'skeletonwarrior'
+        
+        return { type: 'summon', summonType }
     }
 
     static defaultAttack(enemy, player) {
