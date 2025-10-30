@@ -22,13 +22,16 @@ export class CardEffects {
 
         if (effects && effects.length > 0) {
             let hasBlockOnDiscard = false;
-            effects.forEach(effect => {
-                if (effect.type === 'blockOnDiscard') hasBlockOnDiscard = true;
-                this.executeEffect(effect, card, scene, target);
+            const delay = (value && (type === CARD_TYPES.ATTACK || type === CARD_TYPES.SUSTAIN)) ? 400 : 0;
+            scene.time.delayedCall(delay, () => {
+                effects.forEach(effect => {
+                    if (effect.type === 'blockOnDiscard') hasBlockOnDiscard = true;
+                    this.executeEffect(effect, card, scene, target);
+                });
+                if (hasBlockOnDiscard && !scene.discardMode) {
+                    scene.player.blockOnDiscard = 0;
+                }
             });
-            if (hasBlockOnDiscard && !scene.discardMode) {
-                scene.player.blockOnDiscard = 0;
-            }
         }
     }
 
