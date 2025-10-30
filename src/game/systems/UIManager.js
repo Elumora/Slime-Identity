@@ -194,4 +194,26 @@ export class UIManager {
             }
         });
     }
+
+    createEffectTooltip(x, y, effectType) {
+        const tooltips = {
+            slow: 'Lenteur : Réduit les\ndégâts infligés de 50%',
+            fragile: 'Fragile : Subit 50%\nde dégâts en plus',
+            shield: 'Bouclier : Absorbe\nles dégâts'
+        };
+
+        const text = tooltips[effectType] || 'Effet inconnu';
+        
+        const bg = this.scene.add.rectangle(x, y - 50, 250, 60, 0x000000, 0.9)
+            .setDepth(10000)
+            .setStrokeStyle(2, 0x4a90e2);
+        
+        const tooltipText = this.scene.add.text(x, y - 50, text, {
+            fontSize: '16px',
+            color: '#ffffff',
+            align: 'center'
+        }).setOrigin(0.5).setDepth(10001);
+
+        return { bg, text: tooltipText };
+    }
 }

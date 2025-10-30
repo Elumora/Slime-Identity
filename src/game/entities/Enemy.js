@@ -193,7 +193,27 @@ export class Enemy extends Phaser.GameObjects.Container {
             const shieldYOffset = -(spriteHeight / 2 + 35);
 
             this.shieldIcon = this.scene.add.image(-15, shieldYOffset, 'shieldIcon').setScale(0.15);
+            this.shieldIcon.setInteractive({ useHandCursor: true });
             this.add(this.shieldIcon);
+
+            let tooltip = null;
+            this.shieldIcon.on('pointerdown', () => {
+                if (tooltip) {
+                    tooltip.bg.destroy();
+                    tooltip.text.destroy();
+                    tooltip = null;
+                } else {
+                    const worldPos = this.getWorldTransformMatrix();
+                    tooltip = this.scene.uiManager.createEffectTooltip(this.x, this.y + shieldYOffset, 'shield');
+                    this.scene.time.delayedCall(3000, () => {
+                        if (tooltip) {
+                            tooltip.bg.destroy();
+                            tooltip.text.destroy();
+                            tooltip = null;
+                        }
+                    });
+                }
+            });
 
             this.shieldText = this.scene.add.text(10, shieldYOffset, `${totalShield}`, {
                 fontSize: '18px',
@@ -229,14 +249,53 @@ export class Enemy extends Phaser.GameObjects.Container {
 
             if (this.debuffs.fragile) {
                 const fragileIcon = this.scene.add.image(iconX, statusYOffset, 'fragileIcon').setScale(0.15);
+                fragileIcon.setInteractive({ useHandCursor: true });
                 this.add(fragileIcon);
                 this.statusIcons.push(fragileIcon);
+                
+                let tooltip = null;
+                fragileIcon.on('pointerdown', () => {
+                    if (tooltip) {
+                        tooltip.bg.destroy();
+                        tooltip.text.destroy();
+                        tooltip = null;
+                    } else {
+                        tooltip = this.scene.uiManager.createEffectTooltip(this.x + iconX, this.y + statusYOffset, 'fragile');
+                        this.scene.time.delayedCall(3000, () => {
+                            if (tooltip) {
+                                tooltip.bg.destroy();
+                                tooltip.text.destroy();
+                                tooltip = null;
+                            }
+                        });
+                    }
+                });
+                
                 iconX += 35;
             }
             if (this.debuffs.slow) {
                 const slowIcon = this.scene.add.image(iconX, statusYOffset, 'slowIcon').setScale(0.15);
+                slowIcon.setInteractive({ useHandCursor: true });
                 this.add(slowIcon);
                 this.statusIcons.push(slowIcon);
+                
+                let tooltip = null;
+                slowIcon.on('pointerdown', () => {
+                    if (tooltip) {
+                        tooltip.bg.destroy();
+                        tooltip.text.destroy();
+                        tooltip = null;
+                    } else {
+                        tooltip = this.scene.uiManager.createEffectTooltip(this.x + iconX, this.y + statusYOffset, 'slow');
+                        this.scene.time.delayedCall(3000, () => {
+                            if (tooltip) {
+                                tooltip.bg.destroy();
+                                tooltip.text.destroy();
+                                tooltip = null;
+                            }
+                        });
+                    }
+                });
             }
         }
     }
