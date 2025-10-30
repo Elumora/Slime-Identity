@@ -1,53 +1,91 @@
-# Slime Identity - Technology Stack
+# Technology Stack
 
 ## Programming Languages
-- **JavaScript (ES6+)**: Primary development language with modern syntax
-- **JSX**: React component markup for UI integration
+- **JavaScript (ES6+)**: Primary language for game logic
+- **JSX**: React component syntax
+- **HTML/CSS**: Web interface and styling
 
 ## Core Frameworks & Libraries
-- **Phaser 3 (v3.90.0)**: Game engine for 2D game development, rendering, and physics
-- **React (v19.0.0)**: UI framework for game interface and menu systems
-- **React DOM (v19.0.0)**: React rendering for web browsers
 
-## Build System & Development Tools
-- **Vite (v6.3.1)**: Fast build tool and development server
-- **Terser (v5.39.0)**: JavaScript minification for production builds
-- **ESLint (v9.22.0)**: Code linting and style enforcement
-- **@vitejs/plugin-react (v4.3.4)**: React integration for Vite
+### Game Engine
+- **Phaser 3.90.0**: HTML5 game framework for rendering, physics, and game loop
+  - Scene management
+  - Sprite and animation system
+  - Input handling (drag/drop, pointer events)
+  - Tweens and visual effects
 
-## Development Configuration
-- **Node.js**: Runtime environment (ES modules enabled)
-- **EditorConfig**: Consistent coding style across editors
-- **Git**: Version control with standard .gitignore patterns
+### Frontend Framework
+- **React 19.0.0**: UI framework for React-Phaser integration
+- **React DOM 19.0.0**: React rendering
 
-## Asset Formats Supported
-- **Images**: PNG for sprites, backgrounds, and UI elements
-- **Audio**: MP3 and OGG formats for music and sound effects
-- **Fonts**: Web fonts for text rendering
-- **Data**: JSON for configuration and game data
+## Build System & Tools
+
+### Build Tool
+- **Vite 6.3.1**: Fast build tool and dev server
+  - Hot module replacement for development
+  - Optimized production builds
+  - ES modules support
+
+### Code Quality
+- **ESLint 9.22.0**: JavaScript linting
+  - React hooks plugin
+  - React refresh plugin
+  - Custom configuration in `.eslintrc.cjs`
+- **EditorConfig**: Consistent coding styles
+
+### Optimization
+- **Terser 5.39.0**: JavaScript minification for production
 
 ## Development Commands
+
+### Start Development Server
 ```bash
-# Development server with logging
 npm run dev
+```
+Starts Vite dev server with logging (port typically 5173)
 
-# Development server without logging
+### Development Without Logs
+```bash
 npm run dev-nolog
+```
+Starts dev server without custom logging
 
-# Production build with logging
+### Production Build
+```bash
 npm run build
+```
+Creates optimized production build with logging
 
-# Production build without logging
+### Production Build Without Logs
+```bash
 npm run build-nolog
 ```
+Creates production build without custom logging
 
-## Project Configuration
-- **Module Type**: ES modules for modern JavaScript features
-- **Build Target**: Web browsers with modern JavaScript support
-- **Development Port**: Configurable via Vite settings
-- **Asset Optimization**: Automatic optimization for production builds
+## Configuration Files
+
+### Build Configuration
+- `vite/config.dev.mjs`: Development environment settings
+- `vite/config.prod.mjs`: Production build optimization
+
+### Code Quality
+- `.eslintrc.cjs`: ESLint rules and configuration
+- `.editorconfig`: Editor formatting standards
+
+### Project
+- `package.json`: Dependencies and scripts
+- `index.html`: Application entry HTML
+
+## Asset Management
+- Assets loaded from `/public/assets/` directory
+- Phaser AssetLoader handles game asset loading
+- Organized by type (Audio, Background, Cards, Effects, Enemies, GUI, Map, Sprites, Story)
+
+## Module System
+- ES6 modules with `import`/`export`
+- Type: "module" in package.json
+- Class-based architecture for game systems
 
 ## Browser Compatibility
-- Modern browsers supporting ES6+ features
-- WebGL support required for Phaser 3 rendering
-- Web Audio API support for game audio
+- Modern browsers with ES6+ support
+- HTML5 Canvas and WebGL support required for Phaser

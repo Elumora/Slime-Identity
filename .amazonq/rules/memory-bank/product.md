@@ -1,21 +1,44 @@
-# Slime Identity - Product Overview
+# Product Overview
 
 ## Project Purpose
-Slime Identity is a card-based RPG game built with Phaser 3 and React. Players control a slime character navigating through various environments, engaging in strategic card battles against diverse enemies while progressing through an adventure map.
+Slime Identity is a deck-building card battle game built with Phaser 3 and React. Players navigate through a map-based adventure, engaging in turn-based card battles against various enemies while building and refining their deck.
 
 ## Key Features
-- **Card-Based Combat System**: Strategic turn-based battles using a deck of cards with different effects (attack, defense, healing, buffs, debuffs)
-- **Adventure Map Navigation**: Explore interconnected locations with different biomes and challenges
-- **Enemy Variety**: Battle against 15+ different enemy types including werewolves, spirits, samurai, wizards, and mythical creatures
-- **Visual Effects System**: Rich particle effects and animations for combat and environmental interactions
-- **Story Integration**: Narrative elements with voice-over support in multiple languages (English/French)
-- **Card Collection & Rewards**: Earn new cards and upgrade existing ones through gameplay progression
-- **Multiple Game Scenes**: Seamless transitions between map exploration, combat, story sequences, and card management
+
+### Core Gameplay
+- **Turn-based card battles**: Strategic combat system with mana management and card effects
+- **Deck building mechanics**: Players collect and manage cards throughout their journey
+- **Map progression**: Navigate through a branching path system with different encounter types
+- **Enemy variety**: Multiple enemy types with unique behaviors and AI patterns
+- **Card effects system**: Rich card mechanics including attacks, buffs, debuffs, and special abilities
+
+### Battle System
+- Mana-based resource management (3 mana per turn by default)
+- Hand management with draw, discard, and shuffle mechanics
+- Enemy AI with strategic decision-making
+- Visual effects for attacks and card plays
+- Turn management with player and enemy phases
+
+### Progression
+- Persistent game progress saved between sessions
+- Card rewards after battles
+- Map-based adventure with multiple paths
+- Deck evolution through card acquisition
+
+### UI/UX Features
+- Interactive card dragging and playing
+- Deck and discard pile viewing
+- Visual feedback for all game actions
+- Narration system for story elements
+- Debug tools for development
 
 ## Target Users
-- **Casual Gamers**: Players who enjoy strategic card games with accessible mechanics
-- **RPG Enthusiasts**: Fans of role-playing games seeking character progression and exploration
-- **Strategy Game Players**: Users who appreciate tactical decision-making in combat scenarios
+- Players who enjoy deck-building roguelike games
+- Fans of strategic card battle games
+- Casual gamers looking for turn-based gameplay with depth
 
-## Core Value Proposition
-Combines the strategic depth of card-based combat with the exploration and progression elements of traditional RPGs, wrapped in an engaging slime-themed adventure with high-quality visual and audio presentation.
+## Use Cases
+- Single-player campaign progression through map encounters
+- Strategic deck optimization and card synergy exploration
+- Quick tactical battles with meaningful decision-making
+- Replayable runs with different deck compositions
