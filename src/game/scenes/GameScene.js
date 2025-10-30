@@ -216,6 +216,9 @@ export class GameScene extends Scene {
         this.discardHand();
         this.updateDiscardDisplay();
 
+        const aliveEnemies = this.enemies.filter(e => e.active);
+        if (aliveEnemies.length === 0) return;
+
         this.time.delayedCall(400, () => {
             this.uiManager.showPhaseMessage('Tour de l\'ennemi', null, 1500);
         });
