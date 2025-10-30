@@ -125,9 +125,10 @@ export class UIManager {
     }
 
     showCardEffect(text, x, y) {
+        const isDamage = text.startsWith('-') || text.startsWith('+');
         const effectText = this.scene.add.text(x, y, text, {
-            fontSize: '32px',
-            color: '#ffff00',
+            fontSize: isDamage ? '42px' : '32px',
+            color: text.startsWith('-') ? '#ff0000' : '#ffff00',
             fontStyle: 'bold',
             stroke: '#000000',
             strokeThickness: 6
@@ -137,7 +138,7 @@ export class UIManager {
             targets: effectText,
             y: y - 80,
             alpha: 0,
-            duration: 1500,
+            duration: isDamage ? 2000 : 1500,
             ease: 'Power2',
             onComplete: () => effectText.destroy()
         });
