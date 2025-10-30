@@ -103,16 +103,12 @@ export class CardEffects {
                 break;
             case 'blockTemporary':
                 scene.playPlayerEffect(scene.player);
-                if (!scene.player.temporaryShield) scene.player.temporaryShield = 0;
-                scene.player.temporaryShield += effect.value;
-                scene.player.updateHealthBar();
+                scene.player.addShield(effect.value);
                 scene.showCardEffect(`+${effect.value} Bloc`, scene.player.x, scene.player.y - 50);
                 break;
             case 'blockPersistent':
                 scene.playPlayerEffect(scene.player);
-                if (!scene.player.persistentBlock) scene.player.persistentBlock = 0;
-                scene.player.persistentBlock += effect.value;
-                scene.player.updateHealthBar();
+                scene.player.addTemporaryShield(effect.value);
                 scene.showCardEffect(`+${effect.value} Bloc Persistant`, scene.player.x, scene.player.y - 50);
                 break;
             case 'blockIncrement':

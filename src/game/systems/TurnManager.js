@@ -75,15 +75,14 @@ export class TurnManager {
 
     handleEndOfEnemyTurn(player) {
         this.scene.time.delayedCall(300, () => {
-            if (player.temporaryShield) {
-                player.temporaryShield = 0;
+            if (player.shield) {
+                player.shield = 0;
                 player.updateHealthBar();
             }
 
             if (player.blockIncrement?.value > 0) {
-                player.shield += player.blockIncrement.value;
+                player.addTemporaryShield(player.blockIncrement.value);
                 this.scene.showCardEffect(`+${player.blockIncrement.value} Bloc`, player.x, player.y - 50);
-                player.updateHealthBar();
             }
 
             this.scene.mana = this.scene.maxMana;
@@ -106,15 +105,14 @@ export class TurnManager {
     }
 
     handleSkippedTurn(player) {
-        if (player.temporaryShield) {
-            player.temporaryShield = 0;
+        if (player.shield) {
+            player.shield = 0;
             player.updateHealthBar();
         }
 
         if (player.blockIncrement?.value > 0) {
-            player.shield += player.blockIncrement.value;
+            player.addTemporaryShield(player.blockIncrement.value);
             this.scene.showCardEffect(`+${player.blockIncrement.value} Bloc`, player.x, player.y - 50);
-            player.updateHealthBar();
         }
 
         this.scene.mana = this.scene.maxMana;
