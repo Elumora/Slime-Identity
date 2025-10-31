@@ -32,11 +32,12 @@ export class BattleManager {
             enemy.health = enemyData.health;
             enemy.attackDamage = enemyData.attack;
             
+            console.log(`Creating enemy ${enemyData.sprite}, pattern key:`, enemyData.pattern);
             if (enemyData.pattern && ATTACK_PATTERNS[enemyData.pattern]) {
                 enemy.attackPattern = ATTACK_PATTERNS[enemyData.pattern].pattern;
-                console.log(`Enemy ${enemyData.sprite} pattern loaded:`, enemy.attackPattern);
+                console.log(`Pattern loaded successfully:`, enemy.attackPattern);
             } else {
-                console.log(`Enemy ${enemyData.sprite} has no pattern:`, enemyData.pattern);
+                console.log(`No pattern found. Available patterns:`, Object.keys(ATTACK_PATTERNS));
             }
             
             enemy.updateHealthBar();

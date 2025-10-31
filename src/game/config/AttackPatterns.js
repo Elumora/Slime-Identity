@@ -42,10 +42,12 @@ export const ATTACK_PATTERNS = {
     
     thief: {
         pattern: [
-            { action: PATTERN_ACTIONS.ATTACK, multiplier: 0.8 },
+            { action: PATTERN_ACTIONS.ATTACK, multiplier: 1 },
             { action: PATTERN_ACTIONS.DODGE },
             { action: PATTERN_ACTIONS.ATTACK, multiplier: 0.8 },
-            { action: PATTERN_ACTIONS.DODGE }
+            { action: PATTERN_ACTIONS.ATTACK, multiplier: 1 },
+            { action: PATTERN_ACTIONS.DODGE },
+            { action: PATTERN_ACTIONS.ATTACK, multiplier: 0.8 }
         ]
     },
     

@@ -318,7 +318,7 @@ function generateMapElements(path) {
     return { monsters, coins, chests, shops };
 }
 
-const MAP_VERSION = 4;
+const MAP_VERSION = 5;
 
 export function generateMap() {
     const { monsters, coins, chests, shops } = generateMapElements(mapData.path);
