@@ -59,13 +59,17 @@ export class CardEffects {
                 ease: 'Power2',
                 onComplete: () => {
                     scene.enemies.filter(e => e.active).forEach(enemy => {
-                        scene.playAttackEffect(enemy.x, enemy.y);
-                        let finalDamage = damage * multiplier;
-                        if (enemy.debuffs.fragile) {
-                            finalDamage = Math.floor(finalDamage * 1.25);
+                        if (enemy.isDodging) {
+                            scene.showCardEffect('Esquivé!', enemy.x, enemy.y - 50);
+                        } else {
+                            scene.playAttackEffect(enemy.x, enemy.y);
+                            let finalDamage = damage * multiplier;
+                            if (enemy.debuffs.fragile) {
+                                finalDamage = Math.floor(finalDamage * 1.25);
+                            }
+                            enemy.takeDamage(finalDamage);
+                            scene.showCardEffect(`-${finalDamage}`, enemy.x, enemy.y - 50);
                         }
-                        enemy.takeDamage(finalDamage);
-                        scene.showCardEffect(`-${finalDamage}`, enemy.x, enemy.y - 50);
                     });
                 }
             });
@@ -78,13 +82,17 @@ export class CardEffects {
                 duration: 300,
                 ease: 'Power2',
                 onComplete: () => {
-                    scene.playAttackEffect(target.x, target.y);
-                    let finalDamage = damage * multiplier;
-                    if (target.debuffs && target.debuffs.fragile) {
-                        finalDamage = Math.floor(finalDamage * 1.25);
+                    if (target.isDodging) {
+                        scene.showCardEffect('Esquivé!', target.x, target.y - 50);
+                    } else {
+                        scene.playAttackEffect(target.x, target.y);
+                        let finalDamage = damage * multiplier;
+                        if (target.debuffs && target.debuffs.fragile) {
+                            finalDamage = Math.floor(finalDamage * 1.25);
+                        }
+                        target.takeDamage(finalDamage);
+                        scene.showCardEffect(`-${finalDamage}`, target.x, target.y - 50);
                     }
-                    target.takeDamage(finalDamage);
-                    scene.showCardEffect(`-${finalDamage}`, target.x, target.y - 50);
                 }
             });
         }

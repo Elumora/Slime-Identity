@@ -62,6 +62,8 @@ export class Enemy extends Phaser.GameObjects.Container {
         this.statusIcons = [];
         this.shieldIcon = null;
         this.shieldText = null;
+        this.intentIcon = null;
+        this.intentText = null;
         
         this.attackPattern = null;
         this.patternIndex = 0;

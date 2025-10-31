@@ -1,4 +1,4 @@
-import { PATTERN_ACTIONS, ATTACK_PATTERNS } from '../config/AttackPatterns'
+import { ATTACK_PATTERNS, PATTERN_ACTIONS } from '../config/AttackPatterns'
 
 export class PatternManager {
     static setPattern(enemy, patternName) {

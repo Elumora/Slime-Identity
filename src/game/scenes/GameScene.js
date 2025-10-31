@@ -6,6 +6,7 @@ import { CardManager } from '../systems/CardManager';
 import { UIManager } from '../systems/UIManager';
 import { CardViewManager } from '../systems/CardViewManager';
 import { TurnManager } from '../systems/TurnManager';
+import { IntentDisplay } from '../systems/IntentDisplay';
 
 export class GameScene extends Scene {
     constructor() {
@@ -68,6 +69,11 @@ export class GameScene extends Scene {
         this.time.delayedCall(1500, () => {
             this.cardManager.dealCards();
             this.updateDeckDisplay();
+            
+            this.enemies.filter(e => e.active).forEach(enemy => {
+                IntentDisplay.updateEnemyIntent(enemy, this.turnNumber);
+            });
+            
             this.time.delayedCall(1000, () => {
                 this.uiManager.showPhaseMessage('Tour du joueur', `Phase ${this.turnNumber}`, 1500);
             });
@@ -218,6 +224,18 @@ export class GameScene extends Scene {
 
         const aliveEnemies = this.enemies.filter(e => e.active);
         if (aliveEnemies.length === 0) return;
+        
+        aliveEnemies.forEach(enemy => {
+            if (enemy.isDodging) {
+                enemy.isDodging = false;
+                this.tweens.add({
+                    targets: enemy,
+                    alpha: 1,
+                    duration: 300,
+                    ease: 'Power2'
+                });
+            }
+        });
 
         this.time.delayedCall(400, () => {
             this.uiManager.showPhaseMessage('Tour de l\'ennemi', null, 1500);

@@ -1,5 +1,6 @@
 import { Enemy } from '../entities/Enemy';
 import { GameProgress } from './GameProgress';
+import { ATTACK_PATTERNS } from '../config/AttackPatterns';
 
 export class BattleManager {
     constructor(scene) {
@@ -30,7 +31,14 @@ export class BattleManager {
             enemy.maxHealth = enemyData.health;
             enemy.health = enemyData.health;
             enemy.attackDamage = enemyData.attack;
-            enemy.attackPattern = enemyData.pattern || null;
+            
+            if (enemyData.pattern && ATTACK_PATTERNS[enemyData.pattern]) {
+                enemy.attackPattern = ATTACK_PATTERNS[enemyData.pattern].pattern;
+                console.log(`Enemy ${enemyData.sprite} pattern loaded:`, enemy.attackPattern);
+            } else {
+                console.log(`Enemy ${enemyData.sprite} has no pattern:`, enemyData.pattern);
+            }
+            
             enemy.updateHealthBar();
             this.enemies.push(enemy);
         });
