@@ -15,7 +15,7 @@ export const ATTACK_PATTERNS = {
             { action: PATTERN_ACTIONS.ATTACK, multiplier: 1 }
         ]
     },
-    
+
     brute: {
         pattern: [
             { action: PATTERN_ACTIONS.CHARGE, multiplier: 2 },
@@ -23,7 +23,7 @@ export const ATTACK_PATTERNS = {
             { action: PATTERN_ACTIONS.ATTACK, multiplier: 1 }
         ]
     },
-    
+
     firemage: {
         pattern: [
             { action: PATTERN_ACTIONS.ATTACK, multiplier: 1 },
@@ -31,7 +31,7 @@ export const ATTACK_PATTERNS = {
             { action: PATTERN_ACTIONS.ATTACK, multiplier: 1 }
         ]
     },
-    
+
     skelettonarcher: {
         pattern: [
             { action: PATTERN_ACTIONS.ATTACK, multiplier: 1 },
@@ -39,18 +39,15 @@ export const ATTACK_PATTERNS = {
             { action: PATTERN_ACTIONS.ATTACK, multiplier: 1 }
         ]
     },
-    
+
     thief: {
         pattern: [
-            { action: PATTERN_ACTIONS.ATTACK, multiplier: 1 },
             { action: PATTERN_ACTIONS.DODGE },
             { action: PATTERN_ACTIONS.ATTACK, multiplier: 0.8 },
             { action: PATTERN_ACTIONS.ATTACK, multiplier: 1 },
-            { action: PATTERN_ACTIONS.DODGE },
-            { action: PATTERN_ACTIONS.ATTACK, multiplier: 0.8 }
         ]
     },
-    
+
     sentinellegivre: {
         pattern: [
             { action: PATTERN_ACTIONS.ATTACK, multiplier: 1 },
@@ -60,7 +57,7 @@ export const ATTACK_PATTERNS = {
             { action: PATTERN_ACTIONS.ATTACK, multiplier: 1 }
         ]
     },
-    
+
     corruptedgolem: {
         pattern: [
             { action: PATTERN_ACTIONS.ATTACK, multiplier: 1 },
@@ -73,7 +70,7 @@ export const ATTACK_PATTERNS = {
             { action: PATTERN_ACTIONS.ATTACK, multiplier: 1 }
         ]
     },
-    
+
     skeletonwarrior: {
         pattern: [
             { action: PATTERN_ACTIONS.ATTACK, multiplier: 1 }
