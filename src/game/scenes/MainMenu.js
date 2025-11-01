@@ -307,6 +307,11 @@ export class MainMenu extends Scene {
             this.scene.start('CardDebugScene');
         });
 
+        this.input.keyboard.on('keydown-R', () => {
+            this.sound.stopAll();
+            this.scene.start('CardRewardScene', { fromChest: false });
+        });
+
         EventBus.emit('current-scene-ready', this);
     }
 

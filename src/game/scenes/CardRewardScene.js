@@ -34,7 +34,7 @@ export class CardRewardScene extends Scene {
         this.cards = [];
         this.selectedCard = null;
         this.confirmButton = null;
-        this.uncenterAllCards = () => {}; // Dummy method for Card compatibility
+        this.uncenterAllCards = () => { }; // Dummy method for Card compatibility
 
         randomCards.forEach((cardData, i) => {
             const x = startX + (i * spacing);
@@ -46,7 +46,7 @@ export class CardRewardScene extends Scene {
             card.originalY = 600;
             card.originalScale = 1.3;
             card.isSelected = false;
-            
+
             card.removeAllListeners();
             card.setInteractive({ useHandCursor: true });
 
@@ -127,6 +127,27 @@ export class CardRewardScene extends Scene {
             ease: 'Power2'
         });
 
+        const rarityParticleColors = {
+            [RARITY.COMMON]: 0xcccccc, // White
+            [RARITY.UNCOMMON]: 0x00ff00, // Green
+            [RARITY.RARE]: 0x0088ff, // Blue
+            [RARITY.EPIC]: 0xaa00ff, // Purple
+            [RARITY.LEGENDARY]: 0xff8800 // Orange
+        };
+
+        const particleColor = rarityParticleColors[card.cardData.rarity] || 0xcccccc;
+
+        card.particles = this.add.particles(card.originalX, card.originalY, 'particle', {
+            speed: { min: 200, max: 400 },
+            angle: { min: 0, max: 360 },
+            alpha: { start: 0.6, end: 0 },
+            scale: { start: 1, end: 4 },
+            lifespan: 1100,
+            frequency: 10,
+            tint: particleColor,
+            blendMode: 'ADD'
+        }).setDepth(1);
+
         this.cards.forEach(c => {
             c.setInteractive({ useHandCursor: true });
         });
@@ -150,6 +171,14 @@ export class CardRewardScene extends Scene {
 
         card.selectionGlow.setVisible(false);
 
+        if (card.particles) {
+            card.particles.stop();
+            this.time.delayedCall(1000, () => {
+                if (card.particles) card.particles.destroy();
+            });
+            card.particles = null;
+        }
+
         this.tweens.add({
             targets: card,
             scale: card.originalScale,
@@ -171,8 +200,11 @@ export class CardRewardScene extends Scene {
         this.confirmButton.destroy();
 
         const unselectedCards = this.cards.filter(c => c !== this.selectedCard);
-        
+
         unselectedCards.forEach(card => {
+            if (card.particles) {
+                card.particles.destroy();
+            }
             card.selectionGlow.destroy();
             card.rarityGlow.destroy();
             this.tweens.add({
@@ -186,11 +218,14 @@ export class CardRewardScene extends Scene {
             });
         });
 
+        if (this.selectedCard.particles) {
+            this.selectedCard.particles.destroy();
+        }
         this.selectedCard.selectionGlow.destroy();
         this.selectedCard.rarityGlow.destroy();
 
         const moveToCenter = this.selectedCard.originalX !== 960;
-        
+
         if (moveToCenter) {
             this.tweens.add({
                 targets: this.selectedCard,
