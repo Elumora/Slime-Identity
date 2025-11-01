@@ -1,5 +1,5 @@
-import { PatternManager } from './PatternManager'
 import { PATTERN_ACTIONS } from '../config/AttackPatterns'
+import { PatternManager } from './PatternManager'
 
 export class IntentDisplay {
     static updateEnemyIntent(enemy, turnNumber) {
@@ -36,8 +36,8 @@ export class IntentDisplay {
                 description = `Prochain tour:\nAttaque: Inflige ${damage} dégâts`
                 break
             case PATTERN_ACTIONS.CHARGE:
-                iconKey = 'attackIcon'
-                text = 'Charge'
+                iconKey = 'chargeIcon'
+                text = `x${action.multiplier || 2}`
                 color = '#ff6600'
                 description = `Prochain tour:\nCharge: Prépare une attaque\npuissante (x${action.multiplier || 2})`
                 break
@@ -54,7 +54,8 @@ export class IntentDisplay {
                 description = 'Prochain tour:\nEsquive: Évite toutes\nles attaques ce tour'
                 break
             case PATTERN_ACTIONS.SUMMON:
-                text = 'Invoc'
+                iconKey = 'summonIcon'
+                text = ''
                 color = '#aa00ff'
                 description = 'Prochain tour:\nInvocation: Invoque un allié'
                 break
@@ -66,19 +67,20 @@ export class IntentDisplay {
             this.showIntentTooltip(enemy, description)
         })
 
-        if (action.action !== PATTERN_ACTIONS.SUMMON) {
-            enemy.intentIcon = enemy.scene.add.image(action.action === PATTERN_ACTIONS.DODGE ? 0 : -15, 0, iconKey).setScale(0.12)
-            container.add(enemy.intentIcon)
-        }
+        const showIconOnly = action.action === PATTERN_ACTIONS.DODGE || action.action === PATTERN_ACTIONS.SUMMON
+        const iconX = showIconOnly ? 0 : -15
+
+        enemy.intentIcon = enemy.scene.add.image(iconX, 0, iconKey).setScale(0.12)
+        container.add(enemy.intentIcon)
 
         if (text) {
-            enemy.intentText = enemy.scene.add.text(action.action === PATTERN_ACTIONS.SUMMON ? 0 : 10, 0, text, {
+            enemy.intentText = enemy.scene.add.text(10, 0, text, {
                 fontSize: '16px',
                 color: color,
                 fontStyle: 'bold',
                 stroke: '#000000',
                 strokeThickness: 3
-            }).setOrigin(action.action === PATTERN_ACTIONS.SUMMON ? 0.5 : 0, 0.5)
+            }).setOrigin(0, 0.5)
             container.add(enemy.intentText)
         }
 
