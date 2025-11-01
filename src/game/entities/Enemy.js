@@ -204,7 +204,7 @@ export class Enemy extends Phaser.GameObjects.Container {
 
         if (totalShield > 0) {
             const spriteHeight = this.sprite.displayHeight;
-            const shieldYOffset = -(spriteHeight / 2 + 35);
+            const shieldYOffset = -(spriteHeight / 2 + 60);
 
             this.shieldIcon = this.scene.add.image(-15, shieldYOffset, 'shieldIcon').setScale(0.15);
             this.shieldIcon.setInteractive({ useHandCursor: true });
