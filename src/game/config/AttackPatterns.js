@@ -34,7 +34,9 @@ export const ATTACK_PATTERNS = {
 
     skelettonarcher: {
         pattern: [
+            { action: PATTERN_ACTIONS.CHARGE, multiplier: 2 },
             { action: PATTERN_ACTIONS.ATTACK, multiplier: 1 },
+            { action: PATTERN_ACTIONS.DODGE },
             { action: PATTERN_ACTIONS.SUMMON, summonType: 'skeletonwarrior' },
             { action: PATTERN_ACTIONS.ATTACK, multiplier: 1 }
         ]

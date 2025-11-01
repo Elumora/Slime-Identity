@@ -99,6 +99,7 @@ export class Preloader extends Scene {
 
         // MAP
         this.load.audio('music-map-01', 'assets/Audio/BGM/Champ-des-ames-Fanees.mp3');
+        this.load.audio('battle-music', 'assets/Audio/BGM/battle-music.mp3');
 
     }
 

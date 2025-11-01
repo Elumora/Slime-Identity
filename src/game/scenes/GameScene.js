@@ -30,6 +30,9 @@ export class GameScene extends Scene {
     create() {
         this.add.image(960, 540, 'battleSpring').setDisplaySize(1920, 1080);
 
+        this.sound.stopAll();
+        this.sound.play('battle-music', { loop: true, volume: 0.5 });
+
         this.cardManager.initializeDeck();
         this.mana = 3;
         this.maxMana = 3;

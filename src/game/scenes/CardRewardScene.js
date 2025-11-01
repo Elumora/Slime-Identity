@@ -16,7 +16,7 @@ export class CardRewardScene extends Scene {
     }
 
     create() {
-        const overlay = this.add.rectangle(960, 540, 1920, 1080, 0x000000, 0.5).setDepth(0);
+        const overlay = this.add.rectangle(960, 540, 1920, 1080, 0xc8e1cd, 1).setDepth(0);
 
         this.add.text(960, 200, 'Choisissez la nouvelle carte à ajouter à votre deck', {
             fontSize: '48px',
@@ -152,15 +152,17 @@ export class CardRewardScene extends Scene {
             c.setInteractive({ useHandCursor: true });
         });
 
-        this.confirmButton = this.add.text(card.originalX, 950, 'Choisir cette carte', {
+        const buttonBg = this.add.image(card.originalX, 950, 'button-green').setOrigin(0.5).setDepth(10).setScale(0.5, 0.5);
+        const buttonText = this.add.text(card.originalX, 948, 'Choisir', {
             fontSize: '28px',
             color: '#ffffff',
-            backgroundColor: '#00aa00',
-            padding: { x: 20, y: 10 },
             fontStyle: 'bold'
-        }).setOrigin(0.5).setDepth(10).setInteractive({ useHandCursor: true });
+        }).setOrigin(0.5).setDepth(11);
 
-        this.confirmButton.on('pointerdown', () => {
+        this.confirmButton = { bg: buttonBg, text: buttonText };
+
+        buttonBg.setInteractive({ useHandCursor: true });
+        buttonBg.on('pointerdown', () => {
             this.confirmSelection();
         });
     }
@@ -187,7 +189,8 @@ export class CardRewardScene extends Scene {
         });
 
         if (this.confirmButton) {
-            this.confirmButton.destroy();
+            this.confirmButton.bg.destroy();
+            this.confirmButton.text.destroy();
             this.confirmButton = null;
         }
 
@@ -197,7 +200,8 @@ export class CardRewardScene extends Scene {
     }
 
     confirmSelection() {
-        this.confirmButton.destroy();
+        this.confirmButton.bg.destroy();
+        this.confirmButton.text.destroy();
 
         const unselectedCards = this.cards.filter(c => c !== this.selectedCard);
 
