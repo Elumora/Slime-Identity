@@ -122,10 +122,16 @@ export class TurnManager {
             return
         }
 
-        const newEnemy = new Enemy(this.scene, enemy.x + 150, enemy.y, enemyData.sprite, 0.5)
+        const summonedCount = this.scene.enemies.filter(e => e.active && e.summonedBy === enemy).length
+        const spriteWidth = enemy.sprite.displayWidth
+        const spacing = 120
+        const offsetX = -(spriteWidth / 2 + spacing + summonedCount * spacing)
+
+        const newEnemy = new Enemy(this.scene, enemy.x + offsetX, enemy.y, enemyData.sprite, 0.5)
         newEnemy.maxHealth = enemyData.health
         newEnemy.health = enemyData.health
         newEnemy.attackDamage = enemyData.attack
+        newEnemy.summonedBy = enemy
         
         if (enemyData.pattern && ATTACK_PATTERNS[enemyData.pattern]) {
             newEnemy.attackPattern = ATTACK_PATTERNS[enemyData.pattern].pattern
