@@ -152,7 +152,7 @@ export class CardRewardScene extends Scene {
             c.setInteractive({ useHandCursor: true });
         });
 
-        this.confirmButton = this.add.text(card.originalX, 850, 'Choisir cette carte', {
+        this.confirmButton = this.add.text(card.originalX, 950, 'Choisir cette carte', {
             fontSize: '28px',
             color: '#ffffff',
             backgroundColor: '#00aa00',
