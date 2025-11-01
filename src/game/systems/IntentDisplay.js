@@ -48,7 +48,8 @@ export class IntentDisplay {
                 description = `Prochain tour:\nBlocage: Gagne ${action.value || 5}\npoints de bouclier`
                 break
             case PATTERN_ACTIONS.DODGE:
-                text = 'Esquive'
+                iconKey = 'dodgeIcon'
+                text = ''
                 color = '#ffff00'
                 description = 'Prochain tour:\nEsquive: Évite toutes\nles attaques ce tour'
                 break
@@ -65,19 +66,21 @@ export class IntentDisplay {
             this.showIntentTooltip(enemy, description)
         })
 
-        if (action.action !== PATTERN_ACTIONS.DODGE && action.action !== PATTERN_ACTIONS.SUMMON) {
-            enemy.intentIcon = enemy.scene.add.image(-15, 0, iconKey).setScale(0.12)
+        if (action.action !== PATTERN_ACTIONS.SUMMON) {
+            enemy.intentIcon = enemy.scene.add.image(action.action === PATTERN_ACTIONS.DODGE ? 0 : -15, 0, iconKey).setScale(0.12)
             container.add(enemy.intentIcon)
         }
 
-        enemy.intentText = enemy.scene.add.text(action.action === PATTERN_ACTIONS.DODGE || action.action === PATTERN_ACTIONS.SUMMON ? 0 : 10, 0, text, {
-            fontSize: '16px',
-            color: color,
-            fontStyle: 'bold',
-            stroke: '#000000',
-            strokeThickness: 3
-        }).setOrigin(action.action === PATTERN_ACTIONS.DODGE || action.action === PATTERN_ACTIONS.SUMMON ? 0.5 : 0, 0.5)
-        container.add(enemy.intentText)
+        if (text) {
+            enemy.intentText = enemy.scene.add.text(action.action === PATTERN_ACTIONS.SUMMON ? 0 : 10, 0, text, {
+                fontSize: '16px',
+                color: color,
+                fontStyle: 'bold',
+                stroke: '#000000',
+                strokeThickness: 3
+            }).setOrigin(action.action === PATTERN_ACTIONS.SUMMON ? 0.5 : 0, 0.5)
+            container.add(enemy.intentText)
+        }
 
         enemy.add(container)
         enemy.intentContainer = container

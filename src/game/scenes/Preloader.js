@@ -66,6 +66,7 @@ export class Preloader extends Scene {
         this.load.image('shieldIcon', 'assets/GUI/défense.png');
         this.load.image('fragileIcon', 'assets/GUI/fragile.png');
         this.load.image('slowIcon', 'assets/GUI/lenteur.png');
+        this.load.image('dodgeIcon', 'assets/GUI/esquive.png');
         this.load.image('mana', 'assets/GUI/mana-gui.png');
         this.load.image('deck', 'assets/GUI/deck.png');
         this.load.image('defausse', 'assets/GUI/defausse.png');
