@@ -98,6 +98,10 @@ export class GameScene extends Scene {
         this.uiManager.showCardEffect(text, x, y);
     }
 
+    shakeCamera(intensity = 5) {
+        this.cameras.main.shake(200, intensity / 1000);
+    }
+
 
 
 

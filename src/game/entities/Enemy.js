@@ -133,6 +133,10 @@ export class Enemy extends Phaser.GameObjects.Container {
             this.scene.showCardEffect(`-${actualDamage}`, this.x, this.y - 50);
         }
 
+        if (actualDamage > 0 && this.scene && this.scene.shakeCamera) {
+            this.scene.shakeCamera(actualDamage > 10 ? 8 : 5);
+        }
+
         if (this.scene && this.scene.tweens) {
             this.scene.tweens.add({
                 targets: this.sprite,
